@@ -13,6 +13,7 @@ import { METRIC_GROUP, TWO_COL_GRID } from '../../lib/layout'
 import WorkSessionHistory from '../../components/dashboard/sessions/WorkSessionHistory'
 import SessionDetails from '../../components/dashboard/sessions/SessionDetails'
 import SessionTimeline from '../../components/dashboard/sessions/SessionTimeline'
+import ConfirmModal from '../../components/ui/ConfirmModal'
 
 const METRIC_ICONS = [Clock01Icon, Clock02Icon, CheckmarkCircle01Icon, ZapIcon]
 
@@ -21,7 +22,7 @@ function LoadingSkeleton() {
     <div className="animate-pulse space-y-2">
       <div className="h-9 w-48 rounded-lg bg-gray-200" />
       <div className="rounded-xl bg-gray-100 p-2">
-        <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <div className="metric-card-grid">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-28 rounded-xl bg-white" />
           ))}
@@ -44,6 +45,7 @@ export default function WorkSessionsPage() {
   const [timelineDate, setTimelineDate] = useState(null)
   const [durationSeconds, setDurationSeconds] = useState(0)
   const [ending, setEnding] = useState(false)
+  const [showEndModal, setShowEndModal] = useState(false)
 
   const fetchPage = useCallback(async () => {
     try {
@@ -70,7 +72,11 @@ export default function WorkSessionsPage() {
     return () => clearInterval(interval)
   }, [data?.active_session?.status])
 
-  const handleEndSession = async () => {
+  const handleEndClick = () => {
+    setShowEndModal(true)
+  }
+
+  const handleConfirmEnd = async () => {
     setEnding(true)
     try {
       await api.post('/attendance/sign-out/')
@@ -79,6 +85,7 @@ export default function WorkSessionsPage() {
       console.error('End session failed', err)
     } finally {
       setEnding(false)
+      setShowEndModal(false)
     }
   }
 
@@ -97,7 +104,7 @@ export default function WorkSessionsPage() {
   const endButton = (
     <button
       type="button"
-      onClick={handleEndSession}
+      onClick={handleEndClick}
       disabled={ending || activeSession?.status !== 'active'}
       className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#0B3B91] px-4 text-sm font-medium text-white shadow-sm transition hover:bg-[#082d70] disabled:cursor-not-allowed disabled:opacity-60"
     >
@@ -130,7 +137,7 @@ export default function WorkSessionsPage() {
         <div className="flex flex-col gap-2">
           <SessionDetails
             session={activeSession}
-            onEndSession={handleEndSession}
+            onEndSession={handleEndClick}
             endDisabled={ending}
           />
           <SessionTimeline
@@ -141,6 +148,16 @@ export default function WorkSessionsPage() {
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showEndModal}
+        onClose={() => setShowEndModal(false)}
+        onConfirm={handleConfirmEnd}
+        title="End Today's Work Session?"
+        description="Your daily report has been already submitted successfully."
+        confirmLabel="End Session"
+        confirmLoading={ending}
+      />
     </div>
   )
 }

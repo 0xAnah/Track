@@ -14,13 +14,14 @@ import WorkSessionHistory from '../../components/dashboard/sessions/WorkSessionH
 import PerformanceOverview from '../../components/dashboard/charts/PerformanceOverview'
 import RecentNotifications from '../../components/dashboard/widgets/RecentNotifications'
 import SubmitReport from '../../components/dashboard/widgets/SubmitReport'
+import ConfirmModal from '../../components/ui/ConfirmModal'
 
 function LoadingSkeleton() {
   return (
     <div className="animate-pulse space-y-2">
       <div className="h-9 w-48 rounded-lg bg-gray-200" />
       <div className="rounded-xl bg-gray-100 p-2">
-        <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <div className="metric-card-grid">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-28 rounded-xl bg-white" />
           ))}
@@ -51,6 +52,7 @@ export default function WorkerDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(false)
+  const [showEndModal, setShowEndModal] = useState(false)
 
   const fetchDashboard = useCallback(async () => {
     try {
@@ -68,19 +70,32 @@ export default function WorkerDashboard() {
   }, [fetchDashboard])
 
   const handleSessionToggle = async () => {
+    const status = data?.today_session?.status || 'not_started'
+    if (status === 'signed_in') {
+      setShowEndModal(true)
+      return
+    }
     setSessionLoading(true)
     try {
-      const status = data?.today_session?.status || 'not_started'
-      if (status === 'signed_in') {
-        await api.post('/attendance/sign-out/')
-      } else {
-        await api.post('/attendance/sign-in/')
-      }
+      await api.post('/attendance/sign-in/')
       await fetchDashboard()
     } catch (err) {
       console.error('Session toggle failed', err)
     } finally {
       setSessionLoading(false)
+    }
+  }
+
+  const handleConfirmEnd = async () => {
+    setSessionLoading(true)
+    try {
+      await api.post('/attendance/sign-out/')
+      await fetchDashboard()
+    } catch (err) {
+      console.error('End session failed', err)
+    } finally {
+      setSessionLoading(false)
+      setShowEndModal(false)
     }
   }
 
@@ -175,6 +190,16 @@ export default function WorkerDashboard() {
           <RecentNotifications />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showEndModal}
+        onClose={() => setShowEndModal(false)}
+        onConfirm={handleConfirmEnd}
+        title="End Today's Work Session?"
+        description="Your daily report has been already submitted successfully."
+        confirmLabel="End Session"
+        confirmLoading={sessionLoading}
+      />
     </div>
   )
 }
