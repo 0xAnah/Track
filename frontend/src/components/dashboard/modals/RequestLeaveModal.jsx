@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, Calendar, FileText } from 'lucide-react'
-import api from '../../services/api'
+import api from '../../../services/api'
 
 export default function RequestLeaveModal({ onClose, onSuccess }) {
   const [formData, setFormData] = useState({

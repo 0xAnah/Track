@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import SubmitLogModal from './SubmitLogModal'
+import SubmitLogModal from '../modals/SubmitLogModal'
 
 export default function SubmitReport({ onLogSubmitted }) {
   const [isModalOpen, setIsModalOpen] = useState(false)

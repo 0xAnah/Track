@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Building2, Hash } from 'lucide-react'
-import api from '../../services/api'
+import api from '../../../services/api'
 
 export default function BankAccountSetupModal({ onClose, onSuccess }) {
   const [banks, setBanks] = useState([])

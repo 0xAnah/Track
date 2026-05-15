@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, Mail, User, Briefcase } from 'lucide-react'
-import api from '../../services/api'
+import api from '../../../services/api'
 
 export default function InviteWorkerModal({ onClose, onSuccess }) {
   const [formData, setFormData] = useState({

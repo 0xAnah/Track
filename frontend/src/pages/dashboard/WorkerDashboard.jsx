@@ -8,15 +8,16 @@ import {
 } from '@hugeicons/core-free-icons'
 import api from '../../services/api'
 import { MetricCard } from '../../components/layouts/MetricCard'
-import MonthlyHoursChart from '../../components/dashboard/MonthlyHoursChart'
-import WorkSessionHistory from '../../components/dashboard/WorkSessionHistory'
-import PerformanceOverview from '../../components/dashboard/PerformanceOverview'
-import RecentNotifications from '../../components/dashboard/RecentNotifications'
-import SubmitReport from '../../components/dashboard/SubmitReport'
+import { METRIC_GROUP, TWO_COL_GRID } from '../../lib/layout'
+import MonthlyHoursChart from '../../components/dashboard/charts/MonthlyHoursChart'
+import WorkSessionHistory from '../../components/dashboard/sessions/WorkSessionHistory'
+import PerformanceOverview from '../../components/dashboard/charts/PerformanceOverview'
+import RecentNotifications from '../../components/dashboard/widgets/RecentNotifications'
+import SubmitReport from '../../components/dashboard/widgets/SubmitReport'
 
 function LoadingSkeleton() {
   return (
-    <div className="animate-pulse space-y-5">
+    <div className="animate-pulse space-y-2">
       <div className="h-9 w-48 rounded-lg bg-gray-200" />
       <div className="rounded-xl bg-gray-100 p-2">
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
@@ -25,13 +26,16 @@ function LoadingSkeleton() {
           ))}
         </div>
       </div>
-      <div className="grid gap-4 lg:grid-cols-4">
-        <div className="h-80 rounded-xl bg-gray-200 lg:col-span-3" />
+      <div className={TWO_COL_GRID}>
+        <div className="h-80 rounded-xl bg-gray-200" />
         <div className="h-80 rounded-xl bg-gray-200" />
       </div>
-      <div className="grid gap-4 lg:grid-cols-4">
-        <div className="h-72 rounded-xl bg-gray-200 lg:col-span-3" />
+      <div className={TWO_COL_GRID}>
         <div className="h-72 rounded-xl bg-gray-200" />
+        <div className="space-y-2">
+          <div className="h-32 rounded-xl bg-gray-200" />
+          <div className="h-40 rounded-xl bg-gray-200" />
+        </div>
       </div>
     </div>
   )
@@ -107,9 +111,8 @@ export default function WorkerDashboard() {
       : 'Not started'
 
   return (
-    <div className="space-y-5">
-      {/* Page title + CTA */}
-      <div className="flex items-center justify-between gap-4">
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="text-lg font-medium text-black sm:text-xl">Dashboard</h1>
         <button
           type="button"
@@ -122,9 +125,8 @@ export default function WorkerDashboard() {
         </button>
       </div>
 
-      {/* Metric cards — grey group, white cards */}
-      <div className="rounded-xl bg-gray-100 p-2">
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={METRIC_GROUP}>
+        <div className="metric-card-grid">
           <MetricCard
             label="Current Work Session"
             value={isActive ? 'Active' : 'Inactive'}
@@ -157,26 +159,18 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      {/* Row 1 — 3:1 */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-        <div className="lg:col-span-3">
-          <MonthlyHoursChart
-            data={data?.monthly_hours || []}
-            total={data?.monthly_hours_total}
-            trend={data?.monthly_hours_trend}
-          />
-        </div>
-        <div className="lg:col-span-1">
-          <PerformanceOverview performance={data?.performance} />
-        </div>
+      <div className={TWO_COL_GRID}>
+        <MonthlyHoursChart
+          data={data?.monthly_hours || []}
+          total={data?.monthly_hours_total}
+          trend={data?.monthly_hours_trend}
+        />
+        <PerformanceOverview performance={data?.performance} />
       </div>
 
-      {/* Row 2 — 3:1 */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-        <div className="lg:col-span-3">
-          <WorkSessionHistory sessions={data?.recent_attendance_sessions || []} />
-        </div>
-        <div className="flex flex-col gap-4 lg:col-span-1">
+      <div className={TWO_COL_GRID}>
+        <WorkSessionHistory sessions={data?.recent_attendance_sessions || []} />
+        <div className="flex flex-col gap-2">
           <SubmitReport onLogSubmitted={fetchDashboard} />
           <RecentNotifications />
         </div>

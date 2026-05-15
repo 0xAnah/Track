@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, DollarSign, FileText } from 'lucide-react'
-import api from '../../services/api'
+import api from '../../../services/api'
 
 export default function SalaryAdvanceModal({ onClose, onSuccess }) {
   const [formData, setFormData] = useState({

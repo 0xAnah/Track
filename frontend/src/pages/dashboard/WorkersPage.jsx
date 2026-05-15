@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, Search, MoreVertical } from 'lucide-react'
 import api from '../../services/api'
-import InviteWorkerModal from '../../components/dashboard/InviteWorkerModal'
+import InviteWorkerModal from '../../components/dashboard/modals/InviteWorkerModal'
 
 export default function WorkersPage() {
   const [workers, setWorkers] = useState([])

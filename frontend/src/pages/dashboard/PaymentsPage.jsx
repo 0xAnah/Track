@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Plus, Building2, CreditCard, AlertTriangle, Check, RefreshCw } from 'lucide-react'
 import api from '../../services/api'
 import { useAuth } from '../../context/AuthContext'
-import BankAccountSetupModal from '../../components/dashboard/BankAccountSetupModal'
-import SalaryAdvanceModal from '../../components/dashboard/SalaryAdvanceModal'
+import BankAccountSetupModal from '../../components/dashboard/modals/BankAccountSetupModal'
+import SalaryAdvanceModal from '../../components/dashboard/modals/SalaryAdvanceModal'
 
 export default function PaymentsPage() {
   const { user } = useAuth()

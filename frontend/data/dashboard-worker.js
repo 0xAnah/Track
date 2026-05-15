@@ -31,9 +31,9 @@ export const workerDashboard = {
     score: 85,
     trend: { value: '2.0%', isPositive: true },
     segments: [
-      { color: '#0B3B91', width: 50 },
-      { color: '#C026D3', width: 30 },
-      { color: '#22C55E', width: 20 },
+      { color: '#0B3B91', flex: 5 },
+      { color: '#C026D3', flex: 3 },
+      { color: '#22C55E', flex: 2 },
     ],
     metrics: [
       { label: 'Attendance Consistency', value: '92%', color: '#0B3B91', trend: { value: '2.0% Vs last month', isPositive: true } },
@@ -47,5 +47,7 @@ export const workerDashboard = {
     { id: 3, date: '2026-05-08', sign_in: '08:45 AM', sign_out: '05:30 PM', duration: '08h 45m', status: 'late' },
     { id: 4, date: '2026-05-07', sign_in: '08:00 AM', sign_out: '05:00 PM', duration: '09h 00m', status: 'completed' },
     { id: 5, date: '2026-05-06', sign_in: '—', sign_out: '—', duration: '—', status: 'absent' },
+    { id: 6, date: '2026-05-05', sign_in: '08:05 AM', sign_out: '05:10 PM', duration: '09h 05m', status: 'completed' },
+    { id: 7, date: '2026-05-04', sign_in: '08:10 AM', sign_out: '05:05 PM', duration: '08h 55m', status: 'completed' },
   ],
 }

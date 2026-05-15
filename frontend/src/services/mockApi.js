@@ -9,6 +9,7 @@ import {
   banks,
 } from '@data/payments'
 import { monthlyReport } from '@data/reports'
+import { workSessionsPage } from '@data/work-sessions'
 import {
   getCurrentUser,
   getWorkerDashboardData,
@@ -43,6 +44,10 @@ export async function handleMockRequest(method, url, body) {
 
   if (method === 'GET' && path === 'users/dashboard/') {
     return ok(user.role === 'hr' ? hrDashboard : getWorkerDashboardData())
+  }
+
+  if (method === 'GET' && path === 'work-sessions/') {
+    return ok(workSessionsPage)
   }
 
   if (method === 'POST' && path === 'attendance/sign-in/') {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, Search, Calendar as CalendarIcon, Clock } from 'lucide-react'
 import api from '../../services/api'
-import RequestLeaveModal from '../../components/dashboard/RequestLeaveModal'
+import RequestLeaveModal from '../../components/dashboard/modals/RequestLeaveModal'
 
 export default function LeavePage() {
   const [requests, setRequests] = useState([])

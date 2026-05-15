@@ -6,9 +6,9 @@ const defaultPerformance = {
   score: 85,
   trend: { value: '2.0%', isPositive: true },
   segments: [
-    { color: '#0B3B91', width: 50 },
-    { color: '#C026D3', width: 30 },
-    { color: '#22C55E', width: 20 },
+    { color: '#0B3B91', flex: 5 },
+    { color: '#C026D3', flex: 3 },
+    { color: '#22C55E', flex: 2 },
   ],
   metrics: [
     { label: 'Attendance Consistency', value: '92%', color: '#0B3B91', trend: { value: '2.0% Vs last month', isPositive: true } },
@@ -45,12 +45,12 @@ export default function PerformanceOverview({ performance = defaultPerformance }
         )}
       </div>
 
-      <div className="mt-5 flex h-4 w-full overflow-hidden rounded-full">
+      <div className="mt-5 flex h-6 w-full gap-1.5">
         {segments.map((seg, i) => (
           <div
             key={i}
-            style={{ width: `${seg.width}%`, backgroundColor: seg.color }}
-            className="h-full first:rounded-l-full last:rounded-r-full"
+            style={{ flex: seg.flex ?? 1, backgroundColor: seg.color }}
+            className="h-full rounded-md"
           />
         ))}
       </div>
@@ -60,10 +60,7 @@ export default function PerformanceOverview({ performance = defaultPerformance }
           <li key={item.label} className="space-y-1">
             <div className="flex items-center justify-between gap-2 text-xs">
               <span className="flex min-w-0 items-center gap-2 text-gray-600">
-                <span
-                  className="h-2.5 w-2.5 shrink-0 rounded-sm"
-                  style={{ backgroundColor: item.color }}
-                />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: item.color }} />
                 <span className="truncate">{item.label}</span>
               </span>
               <span className="shrink-0 font-semibold text-black">{item.value}</span>
