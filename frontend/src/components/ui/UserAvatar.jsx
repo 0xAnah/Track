@@ -10,7 +10,7 @@ export function UserAvatar({ user, className, size = 40 }) {
       alt=""
       width={size}
       height={size}
-      className={cn('shrink-0 rounded-full bg-gray-100 object-cover', className)}
+      className={cn('shrink-0 rounded-full bg-blue-100 object-cover', className)}
     />
   )
 }

@@ -17,3 +17,27 @@ body {
   color: #111827;
   -webkit-font-smoothing: antialiased;
 }
+
+.metric-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .metric-card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .two-col-grid {
+    grid-template-columns: 65fr 35fr;
+  }
+}

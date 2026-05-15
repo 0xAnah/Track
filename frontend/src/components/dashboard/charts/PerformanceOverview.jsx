@@ -45,12 +45,12 @@ export default function PerformanceOverview({ performance = defaultPerformance }
         )}
       </div>
 
-      <div className="mt-5 flex h-6 w-full gap-1.5">
+      <div className="mt-5 flex h-10 w-full gap-1.5">
         {segments.map((seg, i) => (
           <div
             key={i}
             style={{ flex: seg.flex ?? 1, backgroundColor: seg.color }}
-            className="h-full rounded-md"
+            className="h-full rounded-lg"
           />
         ))}
       </div>

@@ -31,4 +31,12 @@ export const notifications = [
     icon: 'check',
     color: '#0B3B91',
   },
+  {
+    id: 5,
+    title: 'Performance score updated',
+    description: 'Your activity score has been recalculated',
+    time: '3d ago',
+    icon: 'check',
+    color: '#16A34A',
+  },
 ]

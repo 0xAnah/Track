@@ -14,6 +14,7 @@
     "@hugeicons/react": "^1.1.6",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.0",
+    "clsx": "^2.1.1",
     "lucide-react": "^1.14.0",
     "react": "^19.2.6",
     "react-confetti": "^6.4.0",
@@ -21,6 +22,7 @@
     "react-hook-form": "^7.75.0",
     "react-router-dom": "^7.15.0",
     "recharts": "^3.8.1",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
