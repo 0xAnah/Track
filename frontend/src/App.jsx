@@ -1,74 +1,87 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
-/* AUTH */
+/* AUTH — eagerly loaded (entry points) */
 import LandingSignup from './pages/auth/LandingSignup'
 import Login from './pages/auth/Login'
-import VerifyEmail from './pages/auth/VerifyEmail'
-import EmailVerified from './pages/auth/EmailVerified'
-import SecureAccount from './pages/auth/SecureAccount'
 import ProtectedRoute from './pages/auth/ProtectedRoute'
 
-/* ONBOARDING */
-import WorkspaceSetup from './pages/onboarding/WorkspaceSetup'
-import WorkforceImport from './pages/onboarding/WorkforceImport'
-import ManualWorkforce from './pages/onboarding/ManualWorkforce'
-import TrackingConfiguration from './pages/onboarding/TrackingConfiguration'
-import WorkspaceSuccess from './pages/onboarding/WorkspaceSuccess'
+/* Lazy-loaded auth pages */
+const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail'))
+const EmailVerified = lazy(() => import('./pages/auth/EmailVerified'))
+const SecureAccount = lazy(() => import('./pages/auth/SecureAccount'))
 
-/* DASHBOARD */
-import DashboardPage from './pages/dashboard/DashboardPage'
-import WorkSessionsPage from './pages/work-sessions/WorkSessionsPage'
-import WorkersPage from './pages/dashboard/WorkersPage'
-import WorkerCredentialsPage from './pages/dashboard/WorkerCredentialsPage'
-import LeavePage from './pages/dashboard/LeavePage'
-import LeaveRequestsPage from './pages/dashboard/LeaveRequestsPage'
-import PaymentsPage from './pages/dashboard/PaymentsPage'
-import ReportsPage from './pages/dashboard/ReportsPage'
-import DailyReportsPage from './pages/dashboard/DailyReportsPage'
-import PerformancePage from './pages/dashboard/PerformancePage'
-import NotificationsPage from './pages/dashboard/NotificationsPage'
-import SettingsPage from './pages/dashboard/SettingsPage'
-import HelpPage from './pages/dashboard/HelpPage'
+/* ONBOARDING — lazy */
+const WorkspaceSetup = lazy(() => import('./pages/onboarding/WorkspaceSetup'))
+const WorkforceImport = lazy(() => import('./pages/onboarding/WorkforceImport'))
+const ManualWorkforce = lazy(() => import('./pages/onboarding/ManualWorkforce'))
+const TrackingConfiguration = lazy(() => import('./pages/onboarding/TrackingConfiguration'))
+const WorkspaceSuccess = lazy(() => import('./pages/onboarding/WorkspaceSuccess'))
+
+/* DASHBOARD — lazy */
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'))
+const WorkSessionsPage = lazy(() => import('./pages/work-sessions/WorkSessionsPage'))
+const DailyReportsPage = lazy(() => import('./pages/dashboard/DailyReportsPage'))
+const PerformancePage = lazy(() => import('./pages/dashboard/PerformancePage'))
+const NotificationsPage = lazy(() => import('./pages/dashboard/NotificationsPage'))
+const PaymentsPage = lazy(() => import('./pages/dashboard/PaymentsPage'))
+const LeavePage = lazy(() => import('./pages/dashboard/LeavePage'))
+const WorkersPage = lazy(() => import('./pages/dashboard/WorkersPage'))
+const WorkerCredentialsPage = lazy(() => import('./pages/dashboard/WorkerCredentialsPage'))
+const LeaveRequestsPage = lazy(() => import('./pages/dashboard/LeaveRequestsPage'))
+const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
+const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage'))
+const HelpPage = lazy(() => import('./pages/dashboard/HelpPage'))
 
 import DashboardLayout from './components/layouts/DashboardLayout'
 
+function PageLoader() {
+  return (
+    <div className="flex h-40 items-center justify-center">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-[#0B3B91]" />
+    </div>
+  )
+}
+
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingSignup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/email-verified" element={<EmailVerified />} />
-      <Route path="/secure-account" element={<SecureAccount />} />
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<LandingSignup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/email-verified" element={<EmailVerified />} />
+        <Route path="/secure-account" element={<SecureAccount />} />
 
-      <Route path="/workspace-setup" element={<WorkspaceSetup />} />
-      <Route path="/workforce-import" element={<WorkforceImport />} />
-      <Route path="/manual-workforce" element={<ManualWorkforce />} />
-      <Route path="/tracking-configuration" element={<TrackingConfiguration />} />
-      <Route path="/workspace-success" element={<WorkspaceSuccess />} />
+        <Route path="/workspace-setup" element={<WorkspaceSetup />} />
+        <Route path="/workforce-import" element={<WorkforceImport />} />
+        <Route path="/manual-workforce" element={<ManualWorkforce />} />
+        <Route path="/tracking-configuration" element={<TrackingConfiguration />} />
+        <Route path="/workspace-success" element={<WorkspaceSuccess />} />
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/work-sessions" element={<WorkSessionsPage />} />
-        <Route path="/daily-reports" element={<DailyReportsPage />} />
-        <Route path="/performance" element={<PerformancePage />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/payments" element={<PaymentsPage />} />
-        <Route path="/leave" element={<LeavePage />} />
-        <Route path="/workers" element={<WorkersPage />} />
-        <Route path="/worker-credentials" element={<WorkerCredentialsPage />} />
-        <Route path="/leave-requests" element={<LeaveRequestsPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/help" element={<HelpPage />} />
-      </Route>
-    </Routes>
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/work-sessions" element={<WorkSessionsPage />} />
+          <Route path="/daily-reports" element={<DailyReportsPage />} />
+          <Route path="/performance" element={<PerformancePage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/payments" element={<PaymentsPage />} />
+          <Route path="/leave" element={<LeavePage />} />
+          <Route path="/workers" element={<WorkersPage />} />
+          <Route path="/worker-credentials" element={<WorkerCredentialsPage />} />
+          <Route path="/leave-requests" element={<LeaveRequestsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/help" element={<HelpPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
   )
 }
 

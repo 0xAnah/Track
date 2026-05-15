@@ -6,7 +6,7 @@ const STATUS_STYLES = {
   submitted: 'bg-green-100 text-green-700',
   completed: 'bg-green-100 text-green-700',
   draft:     'bg-gray-100 text-gray-600',
-  missing:   'bg-red-100 text-red-700',
+  missing:   'bg-amber-100 text-amber-700',
 }
 
 const STATUS_LABELS = {
