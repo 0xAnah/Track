@@ -6,7 +6,8 @@ import {
   Lock,
   Eye,
 } from 'lucide-react'
-import api from '../../services/api'
+import api, { USE_MOCK } from '../../services/api'
+import { BrandLogo } from '../../components/ui/BrandLogo'
 
 const LandingSignup = () => {
 
@@ -39,6 +40,12 @@ const LandingSignup = () => {
 
     sessionStorage.setItem('hrSignupData', JSON.stringify(hrSignupData))
 
+    if (USE_MOCK) {
+      navigate('/verify-email')
+      setIsLoading(false)
+      return
+    }
+
     try {
       await api.post('/auth/signup/hr/request-verification/', {
         email,
@@ -53,7 +60,7 @@ const LandingSignup = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#F5F7FA] p-3 sm:p-6'>
+    <div className='min-h-screen bg-[#F5F7FA] p-2 sm:p-4'>
 
       <div
         className='
@@ -77,21 +84,7 @@ const LandingSignup = () => {
           {/* TOP */}
           <div className='flex items-center justify-between mb-10'>
 
-            {/* LOGO */}
-            <div className='flex items-center gap-3'>
-
-              <div
-                className='
-                  w-10 h-10 rounded-xl
-                  bg-[#0052CC]
-                  flex items-center justify-center
-                  text-white font-bold text-lg
-                '
-              >
-                T
-              </div>
-
-            </div>
+            <BrandLogo />
 
             {/* SIGN IN */}
             <div className='flex items-center gap-3'>
@@ -131,13 +124,13 @@ const LandingSignup = () => {
 
               <div
                 className='
-                  w-20 h-20 rounded-full
+                  h-11 w-11 rounded-full
                   border border-gray-200
                   flex items-center justify-center
                 '
               >
                 <User
-                  size={34}
+                  size={22}
                   className='text-gray-500'
                 />
               </div>
@@ -147,11 +140,11 @@ const LandingSignup = () => {
             {/* TEXT */}
             <div className='text-center mb-8'>
 
-              <h1 className='text-4xl font-bold mb-3'>
+              <h1 className='mb-1 text-xl font-semibold'>
                 Create your workspace
               </h1>
 
-              <p className='text-gray-500 leading-relaxed'>
+              <p className='text-xs leading-relaxed text-gray-500'>
                 Set up your workforce management dashboard
                 and start tracking employee activity in real time.
               </p>
@@ -161,7 +154,7 @@ const LandingSignup = () => {
             {/* GOOGLE BUTTON */}
             <button
               className='
-                w-full h-14 rounded-2xl
+                w-full h-9 rounded-md text-sm
                 border border-gray-200
                 flex items-center justify-center gap-3
                 text-sm font-medium
@@ -193,14 +186,14 @@ const LandingSignup = () => {
             </div>
 
             {/* FORM */}
-            <form className='space-y-5' onSubmit={handleSignup}>
+            <form className='space-y-3' onSubmit={handleSignup}>
 
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
               {/* FULL NAME */}
               <div>
 
-                <label className='block text-sm font-medium mb-2'>
+                <label className='mb-1 block text-xs font-medium'>
                   Full Name
                 </label>
 
@@ -213,7 +206,7 @@ const LandingSignup = () => {
                     onChange={(e) => setFullName(e.target.value)}
                     required
                     className='
-                      w-full h-14 rounded-2xl
+                      w-full h-9 rounded-md text-sm
                       border border-gray-200
                       pl-12 pr-4
                       outline-none
@@ -233,7 +226,7 @@ const LandingSignup = () => {
               {/* EMAIL */}
               <div>
 
-                <label className='block text-sm font-medium mb-2'>
+                <label className='mb-1 block text-xs font-medium'>
                   Email Address
                 </label>
 
@@ -246,7 +239,7 @@ const LandingSignup = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className='
-                      w-full h-14 rounded-2xl
+                      w-full h-9 rounded-md text-sm
                       border border-gray-200
                       pl-12 pr-4
                       outline-none
@@ -266,7 +259,7 @@ const LandingSignup = () => {
               {/* PASSWORD */}
               <div>
 
-                <label className='block text-sm font-medium mb-2'>
+                <label className='mb-1 block text-xs font-medium'>
                   Password
                 </label>
 
@@ -279,7 +272,7 @@ const LandingSignup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className='
-                      w-full h-14 rounded-2xl
+                      w-full h-9 rounded-md text-sm
                       border border-gray-200
                       pl-12 pr-12
                       outline-none
@@ -323,7 +316,7 @@ const LandingSignup = () => {
                 type="submit"
                 disabled={isLoading}
                 className={`
-                  w-full h-14 rounded-2xl
+                  w-full h-9 rounded-md text-sm
                   ${isLoading ? 'bg-blue-400' : 'bg-[#0052CC] hover:bg-blue-700'}
                   text-white font-semibold
                   transition-all

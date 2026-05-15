@@ -1,3 +1,4 @@
+import { Calendar, ChevronDown } from 'lucide-react'
 import {
   LineChart,
   Line,
@@ -8,39 +9,73 @@ import {
   CartesianGrid,
 } from 'recharts'
 
-const MonthlyHoursChart = ({ data }) => {
-  const totalHours = data.reduce((sum, d) => sum + d.hours, 0)
-
+function CustomTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null
+  const point = payload[0].payload
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-md">
+      <p className="text-xs font-medium text-black">{point.tooltip || `${point.hours}h`}</p>
+    </div>
+  )
+}
+
+export default function MonthlyHoursChart({
+  data = [],
+  total = '167 Hours 45 Minutes',
+  trend = { value: '2.0%', isPositive: true },
+  monthLabel = 'May 2026',
+}) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500">Monthly Hours Worked</p>
-          <h2 className="mt-2 text-xl font-semibold text-black">May 2026</h2>
+          <h2 className="text-sm font-medium text-gray-900">Monthly Hours Worked</h2>
+          <div className="mt-3 flex flex-wrap items-end gap-2">
+            <p className="text-xl font-semibold text-black sm:text-2xl">{total}</p>
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-medium text-green-700">
+              ↑ {trend.value}
+            </span>
+            <span className="text-xs text-gray-400">Vs last month</span>
+          </div>
         </div>
-        <button className="inline-flex items-center rounded-[4px] border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
-          May 2026
+        <button
+          type="button"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+        >
+          <Calendar size={14} className="text-gray-500" />
+          {monthLabel}
+          <ChevronDown size={14} className="text-gray-400" />
         </button>
       </div>
 
-      <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[28px] font-semibold text-black">167 Hours 45 Minutes</p>
-          <p className="mt-2 text-sm text-gray-500">Total time logged this month</p>
-        </div>
-        <span className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
-          +2.0% Vs last month
-        </span>
-      </div>
-
-      <div className="mt-6 h-[320px] w-full">
-        <ResponsiveContainer>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="4 8" stroke="#E5E7EB" vertical={false} />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
-            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
-            <Tooltip cursor={{ stroke: '#0B3B91', strokeWidth: 1 }} />
-            <Line type="monotone" dataKey="hours" stroke="#0B3B91" strokeWidth={3} dot={{ r: 4, fill: '#0B3B91' }} />
+      <div className="mt-4 h-[280px] w-full sm:h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="4 6" stroke="#E5E7EB" vertical={false} />
+            <XAxis
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#9CA3AF', fontSize: 11 }}
+              dy={8}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#9CA3AF', fontSize: 11 }}
+              tickFormatter={(v) => `${v}h`}
+              domain={[0, 8]}
+              ticks={[0, 2, 4, 6, 8]}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Line
+              type="monotone"
+              dataKey="hours"
+              stroke="#0B3B91"
+              strokeWidth={2.5}
+              dot={{ r: 4, fill: '#0B3B91', strokeWidth: 0 }}
+              activeDot={{ r: 5, fill: '#0B3B91' }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -48,4 +83,3 @@ const MonthlyHoursChart = ({ data }) => {
   )
 }
 
-export default MonthlyHoursChart

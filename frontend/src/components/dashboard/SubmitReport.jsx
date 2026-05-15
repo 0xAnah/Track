@@ -1,48 +1,33 @@
 import { useState } from 'react'
 import SubmitLogModal from './SubmitLogModal'
 
-const SubmitReport = ({ onLogSubmitted }) => {
+export default function SubmitReport({ onLogSubmitted }) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
 
   const handleSuccess = () => {
-    setSuccessMessage('Daily log submitted successfully.')
-    if (onLogSubmitted) {
-      onLogSubmitted()
-    }
-    setTimeout(() => setSuccessMessage(''), 4000)
+    onLogSubmitted?.()
   }
 
   return (
     <>
-      <div className="bg-white rounded-xl p-4 shadow-sm flex items-center justify-between">
-        {/* LEFT TEXT */}
-        <div>
-          <h2 className="text-sm font-semibold text-gray-700">
-            Daily Report
-          </h2>
-          <p className="text-xs text-gray-500">
-            Submit your daily tasks
-          </p>
-          {successMessage && <p className="text-[12px] text-green-600 mt-1">{successMessage}</p>}
-        </div>
-
-        {/* BUTTON */}
+      <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <p className="text-sm leading-snug text-gray-600">
+          Submit your daily work summary before ending your work session.
+        </p>
         <button
+          type="button"
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#0B3B91] text-white text-sm px-4 py-2 rounded-md hover:bg-[#082d70] transition shadow-sm"
+          className="inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-gray-200 bg-white px-4 text-xs font-medium text-gray-800 shadow-sm transition hover:bg-gray-50"
         >
-          Submit Log
+          Submit Report
         </button>
       </div>
 
-      <SubmitLogModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <SubmitLogModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onSuccess={handleSuccess}
       />
     </>
   )
 }
-
-export default SubmitReport

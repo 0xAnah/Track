@@ -1,0 +1,34 @@
+export const notifications = [
+  {
+    id: 1,
+    title: 'Work session started',
+    description: 'Your work session has started',
+    time: '08:02 AM',
+    icon: 'check',
+    color: '#0B3B91',
+  },
+  {
+    id: 2,
+    title: 'Daily report reminder',
+    description: "Don't forget to submit your daily report",
+    time: 'Yesterday',
+    icon: 'alert',
+    color: '#7C3AED',
+  },
+  {
+    id: 3,
+    title: 'HR Announcement',
+    description: 'Monthly review meeting scheduled for Friday',
+    time: 'Yesterday',
+    icon: 'alert',
+    color: '#F59E0B',
+  },
+  {
+    id: 4,
+    title: 'Work session started',
+    description: 'Your work session has started',
+    time: '2d ago',
+    icon: 'check',
+    color: '#0B3B91',
+  },
+]

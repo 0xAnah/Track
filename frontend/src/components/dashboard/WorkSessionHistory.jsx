@@ -1,90 +1,84 @@
-const WorkSessionHistory = ({ sessions = [] }) => {
-  const formatDate = (value) => {
-    if (!value) return 'N/A'
-    return new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-  }
+import { Calendar, ChevronDown } from 'lucide-react'
 
-  const formatTime = (value) => {
-    if (!value) return '--'
-    return new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  }
+const STATUS_STYLES = {
+  active: 'bg-green-100 text-green-700',
+  completed: 'bg-green-50 text-green-700',
+  late: 'bg-amber-100 text-amber-800',
+  absent: 'bg-red-100 text-red-700',
+}
 
-  const formatDuration = (minutes = 0) => {
-    if (!minutes) return '0m'
-    const hrs = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    if (!hrs) return `${mins}m`
-    if (!mins) return `${hrs}h`
-    return `${hrs}h ${mins}m`
-  }
+const STATUS_LABELS = {
+  active: 'Active',
+  completed: 'Completed',
+  late: 'Late',
+  absent: 'Absent',
+}
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'signed_out':
-        return 'bg-green-100 text-green-700'
-      case 'signed_in':
-        return 'bg-blue-100 text-blue-700'
-      case 'absent':
-        return 'bg-red-100 text-red-700'
-      default:
-        return 'bg-gray-100 text-gray-700'
-    }
-  }
+function formatRowDate(value) {
+  if (!value) return '—'
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
 
-  const getStatusLabel = (session) => {
-    if (session?.is_absent) return 'Absent'
-    if (session?.status === 'signed_out') return 'Completed'
-    if (session?.status === 'signed_in') return 'Active'
-    return 'Not Started'
-  }
-
+export default function WorkSessionHistory({ sessions = [], monthLabel = 'May 2026' }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-semibold text-black">Work Session History</h2>
-          <p className="mt-1 text-sm text-gray-500">Review the latest session updates.</p>
-        </div>
-        <button className="rounded-[4px] border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
-          May 2026
+    <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-sm font-medium text-gray-900">Work Session History</h2>
+        <button
+          type="button"
+          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+        >
+          <Calendar size={14} className="text-gray-500" />
+          {monthLabel}
+          <ChevronDown size={14} className="text-gray-400" />
         </button>
       </div>
 
-      <table className='w-full text-sm mt-4'>
-        <thead>
-          <tr className='text-left text-gray-500 border-b'>
-            <th className='py-2'>Date</th>
-            <th>Start</th>
-            <th>Ended</th>
-            <th>Duration</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {sessions.length === 0 ? (
-            <tr>
-              <td colSpan='5' className='py-6 text-center text-gray-500'>
-                No session history yet.
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[520px] text-left text-sm">
+          <thead>
+            <tr className="border-b border-gray-100 text-xs font-medium text-gray-500">
+              <th className="pb-3 pr-4 font-medium">Date</th>
+              <th className="pb-3 pr-4 font-medium">Session Start</th>
+              <th className="pb-3 pr-4 font-medium">Session Ended</th>
+              <th className="pb-3 pr-4 font-medium">Duration</th>
+              <th className="pb-3 font-medium">Session Status</th>
             </tr>
-          ) : sessions.map((session, i) => (
-            <tr key={session.date || i} className='border-b border-gray-100'>
-              <td className='py-3 text-gray-700'>{formatDate(session.date)}</td>
-              <td className='text-gray-600'>{formatTime(session.sign_in_time)}</td>
-              <td className='text-gray-600'>{formatTime(session.sign_out_time)}</td>
-              <td className='text-gray-600'>{formatDuration(session.duration_minutes)}</td>
-              <td>
-                <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusStyle(session.status)}`}>
-                  {getStatusLabel(session)}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sessions.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-sm text-gray-500">
+                  No session history yet.
+                </td>
+              </tr>
+            ) : (
+              sessions.map((row) => {
+                const status = row.status || 'completed'
+                return (
+                  <tr key={row.id || row.date} className="border-b border-gray-50 last:border-0">
+                    <td className="py-3.5 pr-4 text-gray-900">{formatRowDate(row.date)}</td>
+                    <td className="py-3.5 pr-4 text-gray-600">{row.sign_in ?? row.sign_in_time ?? '—'}</td>
+                    <td className="py-3.5 pr-4 text-gray-600">{row.sign_out ?? row.sign_out_time ?? '—'}</td>
+                    <td className="py-3.5 pr-4 text-gray-600">{row.duration ?? '—'}</td>
+                    <td className="py-3.5">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          STATUS_STYLES[status] || STATUS_STYLES.completed
+                        }`}
+                      >
+                        {STATUS_LABELS[status] || status}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
-
-export default WorkSessionHistory
