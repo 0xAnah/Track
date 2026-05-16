@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { LockKeyhole, Eye, EyeOff } from 'lucide-react'
 import { USE_MOCK } from '../../services/api'
 import { BrandLogo } from '../../components/ui/BrandLogo'
+import { useAuth } from '../../context/AuthContext'
 
 const inputClass =
   'h-9 w-full rounded-md border border-gray-200 bg-white px-3 text-sm text-black outline-none placeholder:text-gray-400 focus:border-[#0B3B91]'
 
 const Login = () => {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
@@ -24,7 +26,7 @@ const Login = () => {
     try {
       const email = identifier.trim().toLowerCase()
 
-      await new Promise((res) => setTimeout(res, 800))
+      await login(email)
 
       if (email.includes('hr')) {
         navigate('/HRDashboard')
@@ -46,11 +48,13 @@ const Login = () => {
         {/* top button */}
         <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
           <button
-            onClick={() => navigate('/signup')}
+            type="button"
+            onClick={() => navigate('/landing-signup')}
             className="h-8 rounded-md border border-gray-200 px-3 text-xs font-medium text-gray-600 hover:bg-gray-50"
-          >
-            Create account
-          </button>
+            >
+            Register
+            </button>
+         
         </div>
 
         {/* form box */}

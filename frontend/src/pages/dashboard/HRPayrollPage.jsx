@@ -119,7 +119,7 @@ export default function HRPayrollPage() {
               <tr>
                 <th className="px-6 py-4 font-medium">Employee</th>
                 <th className="px-6 py-4 font-medium">Department</th>
-                <th className="px-6 py-4 font-medium">GTBank Account</th>
+                <th className="px-6 py-4 font-medium">Squad Account</th>
                 <th className="px-6 py-4 font-medium">Rating</th>
                 <th className="px-6 py-4 font-medium">Net Pay</th>
                 <th className="px-6 py-4 font-medium">Status</th>
@@ -142,7 +142,7 @@ export default function HRPayrollPage() {
                         </div>
                         <div>
                           <div className="font-medium text-gray-900">{record.account_number}</div>
-                          <div className="text-xs text-gray-500">GTBank • {record.account_type}</div>
+                          <div className="text-xs text-gray-500">Squad • {record.account_type}</div>
                         </div>
                       </div>
                     </td>

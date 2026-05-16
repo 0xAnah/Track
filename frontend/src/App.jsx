@@ -39,6 +39,7 @@ const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage'))
 const HelpPage = lazy(() => import('./pages/dashboard/HelpPage'))
 const HRDashboard = lazy(() => import('./pages/dashboard/HRDashboard'))
 const HRPayrollPage = lazy(() => import('./pages/dashboard/HRPayrollPage'))
+const LandingSignup = lazy(() => import('./pages/auth/LandingSignup'))
 
 import DashboardLayout from './components/layouts/DashboardLayout'
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verified" element={<EmailVerified />} />
         <Route path="/secure-account" element={<SecureAccount />} />
+        <Route path="/landing-signup" element={<LandingSignup />} />
 
         <Route path="/workspace-setup" element={<WorkspaceSetup />} />
         <Route path="/workforce-import" element={<WorkforceImport />} />

@@ -2,7 +2,7 @@ export const workers = [
   {
     id: 1, name: 'John Williams', email: 'john.williams@track.app', department: 'Engineering', score: 78, tier: 'solid', status: 'active',
     employee_id: 'EMP-001', phone: '+234 802 345 6789', date_joined: '2025-09-01',
-    bank_name: 'GTBank', account_number: '0581000001', account_type: 'Savings',
+    bank_name: 'Squad', account_number: '2210000001', account_type: 'Savings',
     salary: 350000, bonus: 17500,
     attendance_rate: 88, monthly_hours: '152h 30m',
     recent_sessions: [
@@ -19,7 +19,7 @@ export const workers = [
   {
     id: 2, name: 'Ada Okonkwo', email: 'ada@track.app', department: 'Operations', score: 91, tier: 'elite', status: 'active',
     employee_id: 'EMP-002', phone: '+234 803 456 7890', date_joined: '2025-06-15',
-    bank_name: 'GTBank', account_number: '0581000002', account_type: 'Savings',
+    bank_name: 'Squad', account_number: '2210000002', account_type: 'Savings',
     salary: 420000, bonus: 42000,
     attendance_rate: 97, monthly_hours: '175h 15m',
     recent_sessions: [
@@ -36,7 +36,7 @@ export const workers = [
   {
     id: 3, name: 'Chidi Nwosu', email: 'chidi@track.app', department: 'Sales', score: 54, tier: 'flagged', status: 'active',
     employee_id: 'EMP-003', phone: '+234 804 567 8901', date_joined: '2025-11-01',
-    bank_name: 'GTBank', account_number: '0581000003', account_type: 'Current',
+    bank_name: 'Squad', account_number: '2210000003', account_type: 'Current',
     salary: 280000, bonus: 0,
     attendance_rate: 65, monthly_hours: '128h 00m',
     recent_sessions: [
@@ -54,7 +54,7 @@ export const workers = [
   {
     id: 4, name: 'Fatima Bello', email: 'fatima@track.app', department: 'Support', score: 72, tier: 'standard', status: 'on_leave',
     employee_id: 'EMP-004', phone: '+234 805 678 9012', date_joined: '2025-08-20',
-    bank_name: 'GTBank', account_number: '0581000004', account_type: 'Savings',
+    bank_name: 'Squad', account_number: '2210000004', account_type: 'Savings',
     salary: 310000, bonus: 0,
     attendance_rate: 81, monthly_hours: '140h 45m',
     recent_sessions: [

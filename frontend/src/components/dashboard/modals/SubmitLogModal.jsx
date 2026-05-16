@@ -1,17 +1,34 @@
 import { useState } from 'react'
-import api from '../../../services/api'
+import { X, CheckCircle } from 'lucide-react'
 
 const EMPTY_TASK = { title: '', description: '', initiated_by: '', handed_to: '', start_time: '', end_time: '' }
+
+const STORAGE_KEY = 'track:submitted-reports'
+
+function getStoredReports() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function saveReports(reports) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reports))
+}
 
 export default function SubmitLogModal({ isOpen, onClose, onSuccess }) {
   const [tasks, setTasks] = useState([{ ...EMPTY_TASK }])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [submitted, setSubmitted] = useState(false)
+  const [submittedReport, setSubmittedReport] = useState(null)
 
   if (!isOpen) return null
 
   const today = new Date().toISOString().split('T')[0]
-  const todayDisplay = new Date().toLocaleDateString('en-US', {
+  const now = new Date()
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+  const todayDisplay = now.toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
 
@@ -34,17 +51,62 @@ export default function SubmitLogModal({ isOpen, onClose, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    try {
-      await api.post('/logs/submit/', { date: today, tasks })
-      setTasks([{ ...EMPTY_TASK }])
-      if (onSuccess) onSuccess()
-      onClose()
-    } catch (err) {
-      setError(err.response?.data?.detail || err.response?.data?.tasks?.[0]?.end_time?.[0] || 'Failed to submit log. Please try again.')
-    } finally {
-      setLoading(false)
+
+    const title = tasks[0].title
+    const description = tasks.map(t => t.description).join('; ')
+
+    const report = {
+      id: Date.now(),
+      date: today,
+      title: title || `Daily Report - ${today}`,
+      department: 'General',
+      submissionTime: timeStr,
+      lastUpdated: timeStr,
+      status: 'submitted',
+      submitted_by: 'You',
+      description: description || 'No description provided.',
+      tasks: tasks.map(t => ({
+        title: t.title,
+        description: t.description,
+        initiated_by: t.initiated_by || '—',
+        handed_to: t.handed_to || '—',
+        start_time: t.start_time || '—',
+        end_time: t.end_time || '—',
+      })),
     }
+
+    await new Promise(res => setTimeout(res, 800))
+
+    const existing = getStoredReports()
+    existing.unshift(report)
+    saveReports(existing)
+
+    setSubmittedReport(report)
+    setSubmitted(true)
+    setLoading(false)
+    setTasks([{ ...EMPTY_TASK }])
+
+    setTimeout(() => {
+      if (onSuccess) onSuccess(report)
+      setSubmitted(false)
+      setSubmittedReport(null)
+      onClose()
+    }, 2000)
+  }
+
+  if (submitted) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-xl">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle size={32} className="text-green-600" />
+          </div>
+          <p className="mt-4 text-lg font-bold text-gray-900">Report Submitted!</p>
+          <p className="mt-1 text-sm text-gray-500">{submittedReport?.title}</p>
+          <p className="text-xs text-gray-400">{today} • {timeStr}</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -55,14 +117,8 @@ export default function SubmitLogModal({ isOpen, onClose, onSuccess }) {
             <h2 className="text-xl font-bold text-gray-900">Submit Daily Log</h2>
             <p className="text-sm text-gray-500 mt-1">{todayDisplay}</p>
           </div>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"><X size={18} /></button>
         </div>
-
-        {error && (
-          <div className="mb-4 text-red-600 text-sm bg-red-50 p-3 rounded-lg border border-red-200">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {tasks.map((task, index) => (

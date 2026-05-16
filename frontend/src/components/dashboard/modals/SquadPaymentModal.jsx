@@ -100,7 +100,7 @@ export default function SquadPaymentModal({ records, isBatch, onClose, onComplet
                   <span className="font-medium text-[#0B3B91]">Payment via Squad Transfer</span>
                 </div>
                 <p className="mt-1 text-xs text-blue-700/70">
-                  Funds will be transferred from your Squad wallet to the employee's GTBank account. Secured by Squad's infrastructure.
+                  Funds will be transferred from your Squad wallet to the employee's Squad account. Secured by Squad's infrastructure.
                 </p>
               </div>
 

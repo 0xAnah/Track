@@ -23,7 +23,7 @@ function formatRowDate(value) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function getActions(status) {
+function getActions(status, onView) {
   if (status === 'draft') {
     return [
       { label: 'Continue Editing', icon: Pencil, onClick: () => {} },
@@ -34,13 +34,13 @@ function getActions(status) {
     return []
   }
   return [
-    { label: 'View Report', icon: Eye, onClick: () => {} },
+    { label: 'View Report', icon: Eye, onClick: onView },
     { label: 'Download Report', icon: Download, onClick: () => {} },
     { label: 'Delete', icon: Trash2, danger: true, onClick: () => {} },
   ]
 }
 
-export default function DailyReportsTable({ reports = [], monthLabel = 'May 2026' }) {
+export default function DailyReportsTable({ reports = [], monthLabel = 'May 2026', onViewReport }) {
   const [search, setSearch] = useState('')
 
   const filtered = reports.filter((r) => {
@@ -119,11 +119,12 @@ export default function DailyReportsTable({ reports = [], monthLabel = 'May 2026
             ) : (
               filtered.map((row) => {
                 const status = row.status || 'completed'
-                const actions = getActions(status)
+                const actions = getActions(status, () => onViewReport?.(row))
                 return (
                   <tr
                     key={row.id}
-                    className="border-b border-gray-50 last:border-0 transition hover:bg-gray-50/60"
+                    onClick={() => onViewReport?.(row)}
+                    className="cursor-pointer border-b border-gray-50 last:border-0 transition hover:bg-gray-50/60"
                   >
                     <td className="py-3.5 pr-4 font-medium text-gray-900 whitespace-nowrap">{formatRowDate(row.date)}</td>
                     <td className="py-3.5 pr-4 text-gray-700">{row.title}</td>
@@ -140,7 +141,11 @@ export default function DailyReportsTable({ reports = [], monthLabel = 'May 2026
                       </span>
                     </td>
                     <td className="py-3.5">
-                      {actions.length > 0 && <ActionMenu items={actions} />}
+                      {actions.length > 0 && (
+                        <span onClick={e => e.stopPropagation()}>
+                          <ActionMenu items={actions} />
+                        </span>
+                      )}
                     </td>
                   </tr>
                 )

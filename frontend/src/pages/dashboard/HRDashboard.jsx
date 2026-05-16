@@ -412,7 +412,7 @@ export default function HRDashboard() {
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-medium text-gray-500">Payroll mockup</p>
-                <h2 className="text-lg font-semibold text-black">GTBank payout accounts</h2>
+                <h2 className="text-lg font-semibold text-black">Squad payout accounts</h2>
               </div>
               <span className="rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1D4ED8]">{teamPayments.length} accounts</span>
             </div>
@@ -431,7 +431,7 @@ export default function HRDashboard() {
                         <p className="font-semibold text-black">{record.worker_name}</p>
                         <p className="text-xs text-gray-500">{record.bank_name} • {record.account_type}</p>
                       </div>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#0B3B91]">GTBank</span>
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#0B3B91]">Squad</span>
                     </div>
                     <p className="mt-3 text-sm font-semibold text-gray-900">{record.account_number}</p>
                   </div>

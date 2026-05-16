@@ -1,6 +1,6 @@
 import { BrandLogo } from '../../components/ui/BrandLogo'
 import { useNavigate } from 'react-router-dom'
-import frame1 from '../../assets/frame1.png'
+
 const HeroSection = () => {
   const navigate = useNavigate()
   return (
@@ -35,9 +35,13 @@ const HeroSection = () => {
           >
             Login
           </button>
-          <button className="px-5 py-2 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800">
+            <button
+            type="button"
+            onClick={() => navigate('/landing-signup')}
+            className="px-5 py-2 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800"
+            >
             Sign Up for Free
-          </button>
+            </button>
         </div>
       </nav>
 
