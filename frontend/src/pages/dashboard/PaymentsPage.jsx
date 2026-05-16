@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Plus, Building2, AlertTriangle, Check } from 'lucide-react'
+import { Plus, Shield, Banknote, Copy, Check } from 'lucide-react'
 import api from '../../services/api'
-import BankAccountSetupModal from '../../components/dashboard/modals/BankAccountSetupModal'
 import SalaryAdvanceModal from '../../components/dashboard/modals/SalaryAdvanceModal'
+
+const SQUAD_ACCOUNT = {
+  number: '2210000001',
+  name: 'John Williams',
+  bank: 'Squad',
+  type: 'Virtual Account',
+}
 
 export default function PaymentsPage() {
   return (
@@ -16,8 +22,8 @@ function WorkerPaymentsView() {
   const [status, setStatus] = useState(null)
   const [history, setHistory] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isBankModalOpen, setIsBankModalOpen] = useState(false)
   const [isAdvanceModalOpen, setIsAdvanceModalOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -39,52 +45,83 @@ function WorkerPaymentsView() {
     fetchData()
   }, [])
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(SQUAD_ACCOUNT.number)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   if (isLoading) return <div className="text-gray-500">Loading payment data...</div>
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Payments & Salary</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your bank account and salary advances</p>
+          <p className="text-sm text-gray-500 mt-1">Your salary is paid via Squad Transfer</p>
         </div>
-        <div className="flex items-center gap-3">
-          {!status?.bank_account_verified ? (
-            <button
-              onClick={() => setIsBankModalOpen(true)}
-              className="flex items-center gap-2 bg-white border border-[#0B3B91] text-[#0B3B91] hover:bg-blue-50 px-5 py-2.5 rounded-md font-medium transition shadow-sm"
-            >
-              <Building2 size={18} />
-              Setup Bank Account
-            </button>
-          ) : (
-            <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2.5 rounded-md text-sm font-medium border border-green-100">
-              <Check size={18} /> Bank Linked
-            </div>
-          )}
-          <button
-            onClick={() => setIsAdvanceModalOpen(true)}
-            disabled={!status?.advance_eligible || !status?.bank_account_verified}
-            className="flex items-center gap-2 bg-[#0B3B91] hover:bg-[#082d70] disabled:bg-gray-300 disabled:text-gray-500 text-white px-5 py-2.5 rounded-md font-medium transition shadow-md"
-          >
-            <Plus size={18} />
-            Request Advance
-          </button>
-        </div>
+        <button
+          onClick={() => setIsAdvanceModalOpen(true)}
+          disabled={!status?.advance_eligible}
+          className="flex items-center gap-2 bg-[#0B3B91] hover:bg-[#082d70] disabled:bg-gray-300 disabled:text-gray-500 text-white px-5 py-2.5 rounded-md font-medium transition shadow-md"
+        >
+          <Plus size={18} />
+          Request Advance
+        </button>
       </div>
 
-      {/* WARNINGS */}
-      {!status?.bank_account_verified && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-md">
-          <div className="flex items-center">
-            <AlertTriangle className="text-yellow-400 mr-3" size={20} />
-            <p className="text-sm text-yellow-700 font-medium">
-              You must set up a verified bank account to receive your salary and request advances.
-            </p>
+      {/* SQUAD ACCOUNT CARD */}
+      <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0B3B91]/10">
+                <Shield size={16} className="text-[#0B3B91]" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Squad Account</p>
+                <p className="text-xs text-gray-500">Receive salary & advances</p>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <div>
+                <p className="text-xs text-gray-500">Account Number</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-2xl font-bold tracking-wider text-gray-900">{SQUAD_ACCOUNT.number}</p>
+                  <button
+                    onClick={handleCopy}
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition"
+                  >
+                    {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-6 text-sm">
+                <div>
+                  <span className="text-gray-500">Account Name: </span>
+                  <span className="font-medium text-gray-900">{SQUAD_ACCOUNT.name}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Bank: </span>
+                  <span className="font-medium text-gray-900">{SQUAD_ACCOUNT.bank}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Type: </span>
+                  <span className="font-medium text-gray-900">{SQUAD_ACCOUNT.type}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden sm:flex">
+            <div className="rounded-xl bg-[#0B3B91] px-4 py-2 text-center text-white">
+              <Banknote size={20} className="mx-auto" />
+              <p className="mt-0.5 text-[10px] font-medium opacity-80">Squad</p>
+            </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -151,9 +188,6 @@ function WorkerPaymentsView() {
         </div>
       </div>
 
-      {isBankModalOpen && (
-        <BankAccountSetupModal onClose={() => setIsBankModalOpen(false)} onSuccess={() => { setIsBankModalOpen(false); fetchData(); }} />
-      )}
       {isAdvanceModalOpen && (
         <SalaryAdvanceModal onClose={() => setIsAdvanceModalOpen(false)} onSuccess={() => { setIsAdvanceModalOpen(false); fetchData(); }} />
       )}
