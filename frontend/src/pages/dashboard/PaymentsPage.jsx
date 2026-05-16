@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Plus, Building2, CreditCard, AlertTriangle, Check, RefreshCw } from 'lucide-react'
+import { Plus, Building2, AlertTriangle, Check } from 'lucide-react'
 import api from '../../services/api'
-import { useAuth } from '../../context/AuthContext'
 import BankAccountSetupModal from '../../components/dashboard/modals/BankAccountSetupModal'
 import SalaryAdvanceModal from '../../components/dashboard/modals/SalaryAdvanceModal'
 
 export default function PaymentsPage() {
-  const { user } = useAuth()
-  const isHR = user?.role === 'hr'
-
   return (
     <div className="p-4 md:p-6 lg:p-8">
-      {isHR ? <HRPaymentsView /> : <WorkerPaymentsView />}
+      <WorkerPaymentsView />
     </div>
   )
 }
@@ -165,112 +161,4 @@ function WorkerPaymentsView() {
   )
 }
 
-function HRPaymentsView() {
-  const [teamPayments, setTeamPayments] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
 
-  const fetchPayments = async () => {
-    try {
-      const res = await api.get('/payments/team/')
-      setTeamPayments(res.data)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchPayments()
-  }, [])
-
-  const handleRelease = async (disbursementId) => {
-    if (!confirm('Are you sure you want to release this withheld salary?')) return
-    try {
-      await api.post(`/payments/release/${disbursementId}/`)
-      fetchPayments()
-    } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to release salary.')
-    }
-  }
-
-  if (isLoading) return <div className="text-gray-500">Loading team payments...</div>
-
-  return (
-    <div className="space-y-6">
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Payroll Management</h1>
-        <p className="text-sm text-gray-500 mt-1">Review current month's salary disbursements and manage holds</p>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Current Month Team Status</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-500">
-              <tr>
-                <th className="px-6 py-4 font-medium">Worker</th>
-                <th className="px-6 py-4 font-medium">Bank</th>
-                <th className="px-6 py-4 font-medium">Account</th>
-                <th className="px-6 py-4 font-medium">Net Payout</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {teamPayments.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">No payment records found.</td>
-                </tr>
-              ) : (
-                teamPayments.map(record => {
-                  const d = record.disbursement
-                  if (!d) return (
-                    <tr key={record.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-medium text-gray-900">{record.worker_name}</td>
-                      <td colSpan="5" className="px-6 py-4 text-gray-500 italic">No disbursement generated yet this month.</td>
-                    </tr>
-                  )
-
-                  const isHeld = d.status === 'held'
-                  return (
-                    <tr key={record.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-medium text-gray-900">{record.worker_name}</td>
-                      <td className="px-6 py-4 text-gray-900">{record.bank_name}</td>
-                      <td className="px-6 py-4 text-gray-600">
-                        <div className="font-medium">{record.account_number}</div>
-                        <div className="text-xs text-gray-500">{record.account_type}</div>
-                      </td>
-                      <td className="px-6 py-4 font-bold">₦{parseFloat(d.net_payout).toLocaleString()}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-medium ${
-                          isHeld ? 'bg-red-100 text-red-700' :
-                          d.status === 'completed' ? 'bg-green-100 text-green-700' :
-                          'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {d.status.toUpperCase()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {isHeld && (
-                          <button
-                            onClick={() => handleRelease(d.id)}
-                            className="flex items-center gap-1 text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-md hover:bg-red-100 transition border border-red-100"
-                          >
-                            <RefreshCw size={14} /> Release
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  )
-}

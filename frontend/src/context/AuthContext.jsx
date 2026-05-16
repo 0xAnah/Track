@@ -1,11 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import api, { USE_MOCK } from '../services/api'
-import { mockTokens } from '@data/auth'
+import { mockTokens, mockHrUser, mockWorkerUser } from '@data/auth'
 import { getStoredUser, setStoredUser, clearStoredUser, resolveUserFromLogin } from '../services/mockStore'
 
 const AuthContext = createContext()
 
 export const useAuth = () => useContext(AuthContext)
+
+const hrRoutePrefixes = ['/HRDashboard', '/hr-payments', '/workers', '/worker-credentials', '/leave-requests', '/reports']
+const isHRRoute = () => hrRoutePrefixes.some(prefix => window.location.pathname.startsWith(prefix))
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -18,6 +21,11 @@ export const AuthProvider = ({ children }) => {
         const stored = getStoredUser()
         if (token && stored) {
           setUser(stored)
+        } else {
+          const defaultUser = isHRRoute() ? { ...mockHrUser } : { ...mockWorkerUser }
+          setUser(defaultUser)
+          localStorage.setItem('access_token', mockTokens.access)
+          setStoredUser(defaultUser)
         }
         setLoading(false)
         return

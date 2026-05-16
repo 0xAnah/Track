@@ -38,7 +38,7 @@ const hrMainNav = [
   { to: '/leave-requests', label: 'Leave Requests', icon: CalendarDays },
   { to: '/reports', label: 'Reports', icon: FileText },
   { to: '/notifications', label: 'Notifications', icon: Bell, badge: '15+' },
-  { to: '/payments', label: 'Payments', icon: CreditCard },
+  { to: '/hr-payments', label: 'Payroll', icon: CreditCard },
 ]
 
 const otherNav = [
@@ -56,7 +56,8 @@ function SidebarContent({
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const isHRRoute = location.pathname.includes('/HRDashboard')
+  const hrRoutePrefixes = ['/HRDashboard', '/hr-payments', '/workers', '/worker-credentials', '/leave-requests', '/reports']
+  const isHRRoute = hrRoutePrefixes.some(prefix => location.pathname.startsWith(prefix)) || user?.role === 'hr'
   const mainNav = isHRRoute ? hrMainNav : workerMainNav
 
   const handleSignOut = () => {
@@ -205,8 +206,11 @@ export function DashboardSidebar({
   isMobileInline,
 }) {
   const endMobileSidebar = useCallback(() => onMobileOpenChange(false), [onMobileOpenChange])
+  const { user } = useAuth()
   const location = useLocation()
-  const routeKey = location.pathname.includes('/HRDashboard') ? 'hr' : 'worker'
+  const hrRoutePrefixes = ['/HRDashboard', '/hr-payments', '/workers', '/worker-credentials', '/leave-requests', '/reports']
+  const isHRRoute = hrRoutePrefixes.some(prefix => location.pathname.startsWith(prefix)) || user?.role === 'hr'
+  const routeKey = isHRRoute ? 'hr' : 'worker'
 
   if (isMobileInline) {
     return (

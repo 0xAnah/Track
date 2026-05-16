@@ -38,6 +38,7 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage'))
 const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage'))
 const HelpPage = lazy(() => import('./pages/dashboard/HelpPage'))
 const HRDashboard = lazy(() => import('./pages/dashboard/HRDashboard'))
+const HRPayrollPage = lazy(() => import('./pages/dashboard/HRPayrollPage'))
 
 import DashboardLayout from './components/layouts/DashboardLayout'
 
@@ -74,6 +75,7 @@ function App() {
         >
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/HRDashboard" element={<HRDashboard />} />
+          <Route path="/hr-payments" element={<HRPayrollPage />} />
           <Route path="/work-sessions" element={<WorkSessionsPage />} />
           <Route path="/daily-reports" element={<DailyReportsPage />} />
           <Route path="/performance" element={<PerformancePage />} />

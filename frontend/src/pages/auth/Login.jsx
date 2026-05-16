@@ -24,21 +24,13 @@ const Login = () => {
     try {
       const email = identifier.trim().toLowerCase()
 
-      // fake network delay
       await new Promise((res) => setTimeout(res, 800))
 
-      // ================= ROLE ROUTING =================
       if (email.includes('hr')) {
         navigate('/HRDashboard')
         return
       }
 
-      if (email.includes('admin')) {
-        navigate('/dashboard')
-        return
-      }
-
-      // default user
       navigate('/dashboard')
     } finally {
       setIsLoading(false)

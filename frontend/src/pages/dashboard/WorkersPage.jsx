@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, MoreVertical } from 'lucide-react'
+import { Plus, Search, Eye } from 'lucide-react'
 import api from '../../services/api'
 import InviteWorkerModal from '../../components/dashboard/modals/InviteWorkerModal'
+import WorkerDetailModal from '../../components/dashboard/modals/WorkerDetailModal'
 
 export default function WorkersPage() {
   const [workers, setWorkers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedWorker, setSelectedWorker] = useState(null)
 
   const fetchWorkers = async () => {
     try {
@@ -84,46 +86,56 @@ export default function WorkersPage() {
                   </td>
                 </tr>
               ) : (
-                workers.map((worker) => (
-                  <tr key={worker.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
-                          {worker.first_name[0]}{worker.last_name[0]}
+                workers.map((worker) => {
+                  const initials = worker.name.split(' ').map(n => n[0]).join('')
+                  return (
+                    <tr
+                      key={worker.id}
+                      onClick={() => setSelectedWorker(worker)}
+                      className="cursor-pointer hover:bg-gray-50 transition"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                            {initials}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{worker.name}</p>
+                            <p className="text-xs text-gray-500">{worker.email}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{worker.first_name} {worker.last_name}</p>
-                          <p className="text-xs text-gray-500">{worker.email}</p>
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">{worker.department || 'N/A'}</td>
+                      <td className="px-6 py-4 text-gray-600">{worker.employee_id || `EMP-${String(worker.id).padStart(3, '0')}`}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-medium ${
+                          worker.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {worker.status === 'active' ? 'Active' : 'On Leave'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full ${worker.score >= 70 ? 'bg-green-500' : 'bg-red-500'}`} 
+                              style={{ width: `${worker.score || 0}%` }}
+                            />
+                          </div>
+                          <span className="font-medium text-gray-700">{worker.score || 0}%</span>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{worker.department || 'N/A'}</td>
-                    <td className="px-6 py-4 text-gray-600">{worker.employee_id || 'N/A'}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-medium ${
-                        worker.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                      }`}>
-                        {worker.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full ${worker.current_score >= 70 ? 'bg-green-500' : 'bg-red-500'}`} 
-                            style={{ width: `${worker.current_score || 0}%` }}
-                          />
-                        </div>
-                        <span className="font-medium text-gray-700">{worker.current_score || 0}%</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <MoreVertical size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setSelectedWorker(worker) }}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-[#0B3B91] hover:underline"
+                        >
+                          <Eye size={14} /> View
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })
               )}
             </tbody>
           </table>
@@ -138,6 +150,10 @@ export default function WorkersPage() {
             fetchWorkers()
           }} 
         />
+      )}
+
+      {selectedWorker && (
+        <WorkerDetailModal worker={selectedWorker} onClose={() => setSelectedWorker(null)} />
       )}
     </div>
   )

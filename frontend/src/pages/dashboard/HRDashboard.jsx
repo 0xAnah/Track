@@ -9,6 +9,7 @@ import {
   CreditCard,
   Bell,
   FileText,
+  Building,
 } from 'lucide-react'
 import {
   UserGroupIcon,
@@ -18,6 +19,8 @@ import {
 } from '@hugeicons/core-free-icons'
 import api from '../../services/api'
 import { MetricCard } from '../../components/layouts/MetricCard'
+import { workers as mockWorkers } from '@data/workers'
+import AIChatbot from '../../components/dashboard/widgets/AIChatbot'
 
 function LoadingSkeleton() {
   return (
@@ -152,6 +155,72 @@ export default function HRDashboard() {
         />
       </section>
 
+      <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-gray-500">Workforce</p>
+            <h2 className="mt-1 text-lg font-semibold text-black">All workers</h2>
+          </div>
+          <Link to="/workers" className="text-sm font-semibold text-[#0B3B91] hover:underline">
+            View full directory
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50 text-gray-500">
+              <tr>
+                <th className="px-5 py-3.5 font-medium rounded-l-xl">Name</th>
+                <th className="px-5 py-3.5 font-medium">Email</th>
+                <th className="px-5 py-3.5 font-medium">Department</th>
+                <th className="px-5 py-3.5 font-medium">Score</th>
+                <th className="px-5 py-3.5 font-medium">Tier</th>
+                <th className="px-5 py-3.5 font-medium rounded-r-xl">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {mockWorkers.map((w) => (
+                <tr key={w.id} className="hover:bg-gray-50 transition">
+                  <td className="px-5 py-3.5 font-medium text-gray-900">{w.name}</td>
+                  <td className="px-5 py-3.5 text-gray-600">{w.email}</td>
+                  <td className="px-5 py-3.5">
+                    <span className="inline-flex items-center gap-1 text-gray-600">
+                      <Building size={13} />
+                      {w.department}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`font-semibold ${
+                      w.score >= 80 ? 'text-green-600' : w.score >= 60 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {w.score}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
+                      w.tier === 'elite' ? 'bg-purple-100 text-purple-700' :
+                      w.tier === 'solid' ? 'bg-blue-100 text-blue-700' :
+                      w.tier === 'flagged' ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {w.tier}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${
+                      w.status === 'active' ? 'bg-green-100 text-green-700' :
+                      w.status === 'on_leave' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>
+                      {w.status === 'on_leave' ? 'On Leave' : w.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.45fr_1fr]">
         <div className="space-y-6">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -203,14 +272,14 @@ export default function HRDashboard() {
                 </div>
               </Link>
               <Link
-                to="/payments"
+                to="/hr-payments"
                 className="group rounded-2xl border border-gray-200 bg-[#F8FAFF] p-4 transition hover:border-[#0B3B91] hover:bg-white"
               >
                 <div className="flex items-center gap-3">
                   <CreditCard size={20} className="text-[#0B3B91]" />
                   <div>
-                    <p className="text-sm font-semibold text-black">Payments</p>
-                    <p className="text-xs text-gray-500">Review payroll status.</p>
+                    <p className="text-sm font-semibold text-black">Payroll</p>
+                    <p className="text-xs text-gray-500">Process salaries and review payroll.</p>
                   </div>
                 </div>
               </Link>
@@ -391,6 +460,8 @@ export default function HRDashboard() {
           </div>
         </aside>
       </section>
+
+      <AIChatbot />
     </div>
   )
 }
