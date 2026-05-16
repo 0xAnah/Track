@@ -72,18 +72,18 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<ProtectedRoute allowedRoles={[ 'worker' ]}><DashboardPage /></ProtectedRoute>} />
-          <Route path="/HRDashboard" element={<ProtectedRoute allowedRoles={[ 'hr' ]}><HRDashboard /></ProtectedRoute>} />
-          <Route path="/work-sessions" element={<ProtectedRoute allowedRoles={[ 'worker' ]}><WorkSessionsPage /></ProtectedRoute>} />
-          <Route path="/daily-reports" element={<ProtectedRoute allowedRoles={[ 'worker' ]}><DailyReportsPage /></ProtectedRoute>} />
-          <Route path="/performance" element={<ProtectedRoute allowedRoles={[ 'worker' ]}><PerformancePage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/HRDashboard" element={<HRDashboard />} />
+          <Route path="/work-sessions" element={<WorkSessionsPage />} />
+          <Route path="/daily-reports" element={<DailyReportsPage />} />
+          <Route path="/performance" element={<PerformancePage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/payments" element={<PaymentsPage />} />
-          <Route path="/leave" element={<ProtectedRoute allowedRoles={[ 'worker' ]}><LeavePage /></ProtectedRoute>} />
-          <Route path="/workers" element={<ProtectedRoute allowedRoles={[ 'hr' ]}><WorkersPage /></ProtectedRoute>} />
-          <Route path="/worker-credentials" element={<ProtectedRoute allowedRoles={[ 'hr' ]}><WorkerCredentialsPage /></ProtectedRoute>} />
-          <Route path="/leave-requests" element={<ProtectedRoute allowedRoles={[ 'hr' ]}><LeaveRequestsPage /></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute allowedRoles={[ 'hr' ]}><ReportsPage /></ProtectedRoute>} />
+          <Route path="/leave" element={<LeavePage />} />
+          <Route path="/workers" element={<WorkersPage />} />
+          <Route path="/worker-credentials" element={<WorkerCredentialsPage />} />
+          <Route path="/leave-requests" element={<LeaveRequestsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/help" element={<HelpPage />} />
         </Route>
