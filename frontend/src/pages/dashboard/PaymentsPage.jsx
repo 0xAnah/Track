@@ -212,8 +212,8 @@ function HRPaymentsView() {
             <thead className="bg-gray-50 text-gray-500">
               <tr>
                 <th className="px-6 py-4 font-medium">Worker</th>
-                <th className="px-6 py-4 font-medium">Base Salary</th>
-                <th className="px-6 py-4 font-medium">Advances Deducted</th>
+                <th className="px-6 py-4 font-medium">Bank</th>
+                <th className="px-6 py-4 font-medium">Account</th>
                 <th className="px-6 py-4 font-medium">Net Payout</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium">Actions</th>
@@ -228,7 +228,7 @@ function HRPaymentsView() {
                 teamPayments.map(record => {
                   const d = record.disbursement
                   if (!d) return (
-                    <tr key={record.worker_id} className="hover:bg-gray-50">
+                    <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 font-medium text-gray-900">{record.worker_name}</td>
                       <td colSpan="5" className="px-6 py-4 text-gray-500 italic">No disbursement generated yet this month.</td>
                     </tr>
@@ -236,10 +236,13 @@ function HRPaymentsView() {
 
                   const isHeld = d.status === 'held'
                   return (
-                    <tr key={record.worker_id} className="hover:bg-gray-50">
+                    <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 font-medium text-gray-900">{record.worker_name}</td>
-                      <td className="px-6 py-4">₦{parseFloat(d.base_salary).toLocaleString()}</td>
-                      <td className="px-6 py-4 text-red-600">-₦{parseFloat(d.advances_deducted).toLocaleString()}</td>
+                      <td className="px-6 py-4 text-gray-900">{record.bank_name}</td>
+                      <td className="px-6 py-4 text-gray-600">
+                        <div className="font-medium">{record.account_number}</div>
+                        <div className="text-xs text-gray-500">{record.account_type}</div>
+                      </td>
                       <td className="px-6 py-4 font-bold">₦{parseFloat(d.net_payout).toLocaleString()}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 rounded-full text-[11px] font-medium ${

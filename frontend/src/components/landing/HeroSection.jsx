@@ -1,5 +1,10 @@
 import { BrandLogo } from '../../components/ui/BrandLogo'
 import { useNavigate } from 'react-router-dom'
+import frame1 from '../../assets/frame1.png'
+import frame2 from '../../assets/frame2.png'
+import frame3 from '../../assets/frame3.png'
+import frame4 from '../../assets/frame4.png'    
+import frame5 from '../../assets/frame5.png'
 
 const HeroSection = () => {
   const navigate = useNavigate()
@@ -47,10 +52,10 @@ const HeroSection = () => {
         {/* Users pill */}
         <div className="flex items-center justify-center gap-2 border rounded-full px-4 py-2 w-fit mx-auto bg-white shadow-sm">
           <div className="flex -space-x-2">
-            <img src="https://i.pravatar.cc/40?img=1" className="w-7 h-7 rounded-full border-2 border-white" />
-            <img src="https://i.pravatar.cc/40?img=2" className="w-7 h-7 rounded-full border-2 border-white" />
-            <img src="https://i.pravatar.cc/40?img=3" className="w-7 h-7 rounded-full border-2 border-white" />
-            <img src="https://i.pravatar.cc/40?img=4" className="w-7 h-7 rounded-full border-2 border-white" />
+            <img src="{frame1}" className="w-7 h-7 rounded-full border-2 border-white" />
+            <img src="{frame2}" className="w-7 h-7 rounded-full border-2 border-white" />
+            <img src="{frame3}" className="w-7 h-7 rounded-full border-2 border-white" />
+            <img src="{frame4}" className="w-7 h-7 rounded-full border-2 border-white" />
           </div>
 
           <span className="text-sm text-gray-600 ml-2">

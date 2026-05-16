@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
 import { LockKeyhole, Eye, EyeOff } from 'lucide-react'
 import { USE_MOCK } from '../../services/api'
 import { BrandLogo } from '../../components/ui/BrandLogo'
@@ -10,7 +9,6 @@ const inputClass =
 
 const Login = () => {
   const navigate = useNavigate()
-  const { login } = useAuth()
 
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
@@ -18,11 +16,29 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [keepLoggedIn, setKeepLoggedIn] = useState(true)
 
+  // ================= MOCK LOGIN LOGIC =================
   const handleLogin = async (e) => {
     e.preventDefault()
     setIsLoading(true)
+
     try {
-      await login(identifier.trim() || 'demo')
+      const email = identifier.trim().toLowerCase()
+
+      // fake network delay
+      await new Promise((res) => setTimeout(res, 800))
+
+      // ================= ROLE ROUTING =================
+      if (email.includes('hr')) {
+        navigate('/HRDashboard')
+        return
+      }
+
+      if (email.includes('admin')) {
+        navigate('/dashboard')
+        return
+      }
+
+      // default user
       navigate('/dashboard')
     } finally {
       setIsLoading(false)
@@ -31,30 +47,50 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen w-full bg-white">
+
+      {/* ================= LEFT SIDE ================= */}
       <div className="relative flex w-full items-center justify-center px-4 py-8 lg:w-1/2">
+
+        {/* top button */}
         <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
           <button
-            type="button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/signup')}
             className="h-8 rounded-md border border-gray-200 px-3 text-xs font-medium text-gray-600 hover:bg-gray-50"
           >
             Create account
           </button>
         </div>
 
+        {/* form box */}
         <div className="w-full max-w-sm">
+
           <div className="mb-4 flex justify-center">
             <BrandLogo />
           </div>
 
-          <h1 className="text-center text-xl font-semibold text-black">Sign in</h1>
+          <h1 className="text-center text-xl font-semibold text-black">
+            Sign in
+          </h1>
+
           <p className="mt-1 text-center text-xs text-gray-500">
             {USE_MOCK
-              ? 'Mock mode: use any email/password. Add “hr” for HR dashboard.'
+              ? 'Mock mode: use any email. Add “hr” for HR dashboard.'
               : 'Welcome back. Enter your details.'}
           </p>
 
+          {USE_MOCK && (
+            <p className="mt-2 text-center text-xs text-gray-500">
+              HR users can use any email containing <span className="font-semibold">hr</span> or jump directly to the{' '}
+              <Link to="/HRDashboard" className="font-semibold text-[#0B3B91] hover:underline">
+                HR dashboard
+              </Link>
+              .
+            </p>
+          )}
+
+          {/* ================= FORM ================= */}
           <form onSubmit={handleLogin} className="mt-6 space-y-3">
+
             <input
               type="text"
               placeholder="Email or username"
@@ -63,8 +99,10 @@ const Login = () => {
               className={inputClass}
             />
 
+            {/* PASSWORD */}
             <div className="relative">
               <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
@@ -72,15 +110,17 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className={`${inputClass} pl-9 pr-9`}
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
             </div>
 
+            {/* KEEP LOGGED IN */}
             <label className="flex items-center gap-2 text-xs text-gray-500">
               <input
                 type="checkbox"
@@ -91,6 +131,7 @@ const Login = () => {
               Keep me logged in
             </label>
 
+            {/* SUBMIT */}
             <button
               type="submit"
               disabled={isLoading}
@@ -102,34 +143,46 @@ const Login = () => {
         </div>
       </div>
 
+      {/* ================= RIGHT SIDE ================= */}
       <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#F9FAFB] lg:flex">
+
+        {/* background pattern */}
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
+            backgroundImage:
+              'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
             backgroundSize: '22px 22px',
           }}
         />
+
+        {/* content */}
         <div className="relative z-10 max-w-md px-10">
-          <p className="text-2xl font-bold leading-snug tracking-tight text-black">
+          <p className="text-2xl font-bold leading-snug text-black">
             Track workforce activity, daily reports, and performance in one place.
           </p>
+
           <div className="mt-6 flex items-center gap-3">
             <img
               src="https://i.pravatar.cc/150?img=32"
-              alt=""
               className="h-10 w-10 rounded-full object-cover"
+              alt=""
             />
+
             <div>
-              <p className="text-sm font-semibold text-black">Amina Yusuf</p>
-              <p className="text-xs text-gray-500">HR Manager, Global Solutions</p>
+              <p className="text-sm font-semibold text-black">
+                Amina Yusuf
+              </p>
+              <p className="text-xs text-gray-500">
+                HR Manager, Global Solutions
+              </p>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   )
 }
 
 export default Login
-

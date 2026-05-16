@@ -37,13 +37,12 @@ export function MetricCard({ label, value, valueCompact, trend, icon, iconColor,
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-10 sm:w-10"
         style={{ backgroundColor: hexToRgba(iconColor, 0.1) }}
       >
-        <HugeiconsIcon
-          icon={icon}
-          size={20}
-          type="solid"
-          className="h-4 w-4 shrink-0 sm:h-5 sm:w-5"
-          style={{ color: iconColor }}
-        />
+            <HugeiconsIcon
+        icon={icon}
+        size={20}
+        className="h-4 w-4 shrink-0 sm:h-5 sm:w-5"
+        style={{ color: iconColor }}
+      />
       </div>
 
       <span className="min-w-0 truncate text-xs text-gray-500 sm:text-sm">{label}</span>

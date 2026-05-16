@@ -12,9 +12,51 @@ export const advanceHistory = [
 ]
 
 export const teamPayments = [
-  { id: 1, worker_name: 'John Williams', amount: 350000, status: 'on_hold', tier: 'solid' },
-  { id: 2, worker_name: 'Ada Okonkwo', amount: 420000, status: 'ready', tier: 'elite' },
-  { id: 3, worker_name: 'Chidi Nwosu', amount: 280000, status: 'on_hold', tier: 'flagged' },
+  {
+    id: 1,
+    worker_name: 'John Williams',
+    tier: 'solid',
+    bank_name: 'GTBank',
+    account_number: '0581000001',
+    account_type: 'Savings',
+    disbursement: {
+      id: 101,
+      base_salary: 350000,
+      advances_deducted: 50000,
+      net_payout: 300000,
+      status: 'held',
+    },
+  },
+  {
+    id: 2,
+    worker_name: 'Ada Okonkwo',
+    tier: 'elite',
+    bank_name: 'GTBank',
+    account_number: '0581000002',
+    account_type: 'Savings',
+    disbursement: {
+      id: 102,
+      base_salary: 420000,
+      advances_deducted: 0,
+      net_payout: 420000,
+      status: 'completed',
+    },
+  },
+  {
+    id: 3,
+    worker_name: 'Chidi Nwosu',
+    tier: 'flagged',
+    bank_name: 'GTBank',
+    account_number: '0581000003',
+    account_type: 'Savings',
+    disbursement: {
+      id: 103,
+      base_salary: 280000,
+      advances_deducted: 20000,
+      net_payout: 260000,
+      status: 'held',
+    },
+  },
 ]
 
 export const banks = [

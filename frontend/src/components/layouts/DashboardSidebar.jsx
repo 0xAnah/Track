@@ -32,9 +32,9 @@ const workerMainNav = [
 ]
 
 const hrMainNav = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/HRDashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/workers', label: 'Workers', icon: Users },
-  { to: '/worker-credentials', label: 'Credential File', icon: FileText },
+  { to: '/worker-credentials', label: 'Worker Credentials', icon: FileText },
   { to: '/leave-requests', label: 'Leave Requests', icon: CalendarDays },
   { to: '/reports', label: 'Reports', icon: FileText },
   { to: '/notifications', label: 'Notifications', icon: Bell, badge: '15+' },
