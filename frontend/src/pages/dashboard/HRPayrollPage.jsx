@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CreditCard, Banknote, CheckCircle, AlertCircle, Clock, Search, DollarSign, Zap } from 'lucide-react'
 import { teamPayments } from '@data/payments'
+import SquadPaymentModal from '../../components/dashboard/modals/SquadPaymentModal'
 
 const tierColors = {
   elite: 'bg-purple-100 text-purple-700',
@@ -19,10 +20,9 @@ const statusBadge = {
 export default function HRPayrollPage() {
   const [records, setRecords] = useState([])
   const [search, setSearch] = useState('')
-  const [payingId, setPayingId] = useState(null)
   const [successId, setSuccessId] = useState(null)
-  const [payingAll, setPayingAll] = useState(false)
   const [paidAllIds, setPaidAllIds] = useState([])
+  const [squadModal, setSquadModal] = useState(null)
 
   useEffect(() => {
     setRecords(teamPayments)
@@ -35,36 +35,24 @@ export default function HRPayrollPage() {
   )
 
   const handlePaySalary = (id) => {
-    setPayingId(id)
-    setTimeout(() => {
-      setRecords(prev =>
-        prev.map(r => r.id === id ? { ...r, status: 'paid' } : r)
-      )
-      setPayingId(null)
-      setSuccessId(id)
-      setTimeout(() => setSuccessId(null), 2500)
-    }, 1200)
+    const record = records.find(r => r.id === id)
+    if (record) setSquadModal({ records: [record], isBatch: false })
   }
 
   const eligibleForBatch = records.filter(r => r.score >= 70 && r.status !== 'paid' && r.status !== 'completed')
 
   const handlePayAllEligible = () => {
-    setPayingAll(true)
-    const ids = eligibleForBatch.map(r => r.id)
-    let idx = 0
-    ids.forEach(id => {
-      setTimeout(() => {
-        setRecords(prev =>
-          prev.map(r => r.id === id ? { ...r, status: 'paid' } : r)
-        )
-        setPaidAllIds(prev => [...prev, id])
-        idx++
-        if (idx === ids.length) {
-          setPayingAll(false)
-          setTimeout(() => setPaidAllIds([]), 2500)
-        }
-      }, (idx + 1) * 300)
-    })
+    setSquadModal({ records: eligibleForBatch, isBatch: true })
+  }
+
+  const handleSquadComplete = (id) => {
+    setRecords(prev => prev.map(r => r.id === id ? { ...r, status: 'paid' } : r))
+    setSuccessId(id)
+    setPaidAllIds(prev => [...prev, id])
+    setTimeout(() => {
+      setSuccessId(null)
+      setPaidAllIds([])
+    }, 2500)
   }
 
   const totalPending = records.filter(r => r.status === 'pending' || r.status === 'held').length
@@ -81,20 +69,10 @@ export default function HRPayrollPage() {
         {eligibleForBatch.length > 0 && (
           <button
             onClick={handlePayAllEligible}
-            disabled={payingAll}
-            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-md"
+            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-md"
           >
-            {payingAll ? (
-              <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                Paying {eligibleForBatch.length} employees...
-              </>
-            ) : (
-              <>
-                <Zap size={18} />
-                Pay All Eligible ({eligibleForBatch.length})
-              </>
-            )}
+            <Zap size={18} />
+            Pay All Eligible ({eligibleForBatch.length})
           </button>
         )}
       </div>
@@ -191,20 +169,11 @@ export default function HRPayrollPage() {
                       ) : (
                         <button
                           onClick={() => handlePaySalary(record.id)}
-                          disabled={payingId === record.id || record.status === 'paid' || record.status === 'completed' || payingAll}
+                          disabled={record.status === 'paid' || record.status === 'completed'}
                           className="inline-flex items-center gap-1.5 bg-[#0B3B91] hover:bg-[#082d70] disabled:bg-gray-200 disabled:text-gray-400 text-white px-4 py-2 rounded-lg text-xs font-medium transition shadow-sm"
                         >
-                          {payingId === record.id ? (
-                            <>
-                              <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <DollarSign size={14} />
-                              Pay Salary
-                            </>
-                          )}
+                          <DollarSign size={14} />
+                          Pay Salary
                         </button>
                       )}
                     </td>
@@ -222,6 +191,14 @@ export default function HRPayrollPage() {
           </table>
         </div>
       </div>
+      {squadModal && (
+        <SquadPaymentModal
+          records={squadModal.records}
+          isBatch={squadModal.isBatch}
+          onClose={() => setSquadModal(null)}
+          onComplete={handleSquadComplete}
+        />
+      )}
     </div>
   )
 }
