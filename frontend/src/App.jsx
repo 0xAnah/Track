@@ -1,12 +1,16 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
+/*Hero Section*/
+import Home from './pages/home/Home'
+
+
 /* AUTH — eagerly loaded (entry points) */
 import LandingSignup from './pages/auth/LandingSignup'
 import Login from './pages/auth/Login'
 import ProtectedRoute from './pages/auth/ProtectedRoute'
 
-/* Lazy-loaded auth pages */
+/*  auth pages */
 const VerifyEmail = lazy(() => import('./pages/auth/VerifyEmail'))
 const EmailVerified = lazy(() => import('./pages/auth/EmailVerified'))
 const SecureAccount = lazy(() => import('./pages/auth/SecureAccount'))
@@ -47,7 +51,7 @@ function App() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<LandingSignup />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/email-verified" element={<EmailVerified />} />
