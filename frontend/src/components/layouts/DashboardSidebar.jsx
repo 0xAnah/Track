@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Clock,
@@ -55,8 +55,9 @@ function SidebarContent({
 }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const isHR = user?.role === 'hr'
-  const mainNav = isHR ? hrMainNav : workerMainNav
+  const location = useLocation()
+  const isHRRoute = location.pathname.includes('/HRDashboard')
+  const mainNav = isHRRoute ? hrMainNav : workerMainNav
 
   const handleSignOut = () => {
     logout()
@@ -204,11 +205,14 @@ export function DashboardSidebar({
   isMobileInline,
 }) {
   const endMobileSidebar = useCallback(() => onMobileOpenChange(false), [onMobileOpenChange])
+  const location = useLocation()
+  const routeKey = location.pathname.includes('/HRDashboard') ? 'hr' : 'worker'
 
   if (isMobileInline) {
     return (
       <div className="h-full bg-[#F9FAFB]">
         <SidebarContent
+          key={routeKey}
           collapsed={false}
           showCloseButton
           onClose={endMobileSidebar}
@@ -223,7 +227,7 @@ export function DashboardSidebar({
       className="fixed inset-y-0 left-0 z-20 hidden flex-col bg-[#F9FAFB] transition-[width] duration-200 ease-in-out lg:flex"
       style={{ width: collapsed ? COLLAPSED_SIDEBAR_WIDTH : SIDEBAR_WIDTH }}
     >
-      <SidebarContent collapsed={collapsed} onToggleCollapsed={onToggleCollapsed} />
+      <SidebarContent key={routeKey} collapsed={collapsed} onToggleCollapsed={onToggleCollapsed} />
     </aside>
   )
 }
