@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Settings2 } from 'lucide-react'
+import { BrandLogo } from '../../components/ui/BrandLogo'
 
 const TrackingConfiguration = () => {
   const navigate = useNavigate()
@@ -13,10 +14,6 @@ const TrackingConfiguration = () => {
     dailyReports: true,
   })
 
-  /* ========================================= */
-  /* TOGGLE SWITCH */
-  /* ========================================= */
-
   const toggleSetting = (key) => {
     setSettings((prev) => ({
       ...prev,
@@ -24,432 +21,102 @@ const TrackingConfiguration = () => {
     }))
   }
 
-  /* ========================================= */
-  /* FINISH SETUP */
-  /* ========================================= */
-
   const handleFinishSetup = () => {
-    localStorage.setItem(
-      'trackingSettings',
-      JSON.stringify(settings)
-    )
-
+    localStorage.setItem('trackingSettings', JSON.stringify(settings))
     navigate('/workspace-success')
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] font-sans flex flex-col">
-
-      {/* ========================================= */}
-      {/* TOP SECTION */}
-      {/* ========================================= */}
-
-      <div className="px-4 pt-5 sm:px-8 lg:px-16 lg:pt-6">
-
-        {/* HEADER */}
-        <div className="flex items-center justify-between">
-
-          {/* LOGO */}
-          <div className="h-7 w-7 rounded-sm bg-[#0B3B91]" />
-
-          {/* SIGN IN */}
-          <div className="flex items-center gap-2 sm:gap-3">
-
-            <p className="hidden sm:block text-[13px] text-gray-500">
-              Already have an account?
-            </p>
-
-            <button
-              className="
-                rounded-md border border-gray-200
-                bg-white px-3 py-1
-                text-[10px] sm:text-[11px]
-                text-gray-500
-                shadow-sm
-              "
-            >
-              Sign In
-            </button>
-
-          </div>
-
+    <div className="flex min-h-screen w-full bg-white">
+      {/* LEFT SIDE */}
+      <div className="relative flex w-full items-center justify-center px-4 py-8 lg:w-1/2">
+        {/* PROGRESS BAR */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+           <div className="h-full bg-[#0B3B91] transition-all duration-500" style={{ width: '75%' }} />
         </div>
 
-        {/* BACK + STEP */}
-        <div className="mt-8 sm:mt-10 flex items-center justify-between">
-
-          {/* BACK */}
+        <div className="absolute left-4 top-6 sm:left-6">
           <button
             onClick={() => navigate(-1)}
-            className="
-              flex items-center gap-2
-              text-[12px] sm:text-[13px]
-              text-gray-500
-            "
+            className="flex items-center gap-2 text-xs text-gray-500 hover:text-black"
           >
-            <ArrowLeft size={15} />
-            Go Back
+            <ArrowLeft size={14} />
+            Back
           </button>
-
-          {/* STEP */}
-          <p className="text-[12px] sm:text-[13px] text-gray-500">
-            Step 3 / 4
-          </p>
-
         </div>
 
-        {/* PROGRESS */}
-        <div className="mt-4 h-[4px] w-full overflow-hidden rounded-full bg-[#ececec]">
+        <div className="w-full max-sm">
+          <div className="mb-4 flex justify-center">
+            <BrandLogo />
+          </div>
 
-          <div className="h-full w-3/4 rounded-full bg-[#0B3B91]" />
-
-        </div>
-
-      </div>
-
-      {/* ========================================= */}
-      {/* MAIN CONTENT */}
-      {/* ========================================= */}
-
-      <div className="flex flex-1 justify-center px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-
-        <div className="w-full max-w-[700px]">
-
-          {/* TITLE */}
           <div className="text-center">
-
-            <h1
-              className="
-                text-[24px]
-                sm:text-[28px]
-                lg:text-[30px]
-                font-semibold text-black
-                leading-tight
-              "
-            >
-              Configure Work Session Tracking
-            </h1>
-
-            <p
-              className="
-                mx-auto mt-3
-                max-w-[500px]
-                text-[13px]
-                sm:text-[14px]
-                leading-[22px]
-                sm:leading-[24px]
-                text-gray-500
-                px-2
-              "
-            >
-              Customize how employee attendance,
-              work sessions, and daily activities
-              will be managed.
+            <h1 className="text-xl font-semibold text-black">Tracking configuration</h1>
+            <p className="mt-1 text-xs text-gray-500">
+              Customize how work sessions are managed. (Step 3/4)
             </p>
-
           </div>
 
-          {/* ========================================= */}
-          {/* SETTINGS */}
-          {/* ========================================= */}
-
-          <div className="mt-12 sm:mt-16 space-y-8 sm:space-y-10">
-
-            {/* ITEM 1 */}
-            <div className="flex items-start justify-between gap-4 sm:gap-6">
-
-              <div className="flex-1">
-
-                <h2 className="text-[14px] sm:text-[16px] font-medium text-black">
-                  Enable automatic work session tracking
-                </h2>
-
-                <p className="mt-2 text-[11px] sm:text-[12px] leading-[18px] sm:leading-[20px] text-gray-500">
-                  Automatically start employee work
-                  sessions when they log into Track to
-                  ensure accurate attendance records.
-                </p>
-
+          <div className="mt-8 space-y-4">
+            {Object.entries({
+              autoTracking: { label: 'Automatic Tracking', desc: 'Start sessions on login' },
+              officeRestriction: { label: 'Office Restriction', desc: 'Login only at office' },
+              workHours: { label: 'Set Work Hours', desc: 'Monitor attendance consistency' },
+              lateAlerts: { label: 'Late Alerts', desc: 'Notify on late attendance' },
+              dailyReports: { label: 'Daily Reports', desc: 'Remind users for summaries' },
+            }).map(([key, { label, desc }]) => (
+              <div key={key} className="flex items-center justify-between rounded-lg border border-gray-100 p-3 bg-gray-50/30">
+                <div>
+                  <h3 className="text-xs font-semibold text-black">{label}</h3>
+                  <p className="text-[10px] text-gray-400">{desc}</p>
+                </div>
+                <button
+                  onClick={() => toggleSetting(key)}
+                  className={`relative h-5 w-9 rounded-full transition-all ${settings[key] ? 'bg-[#0B3B91]' : 'bg-gray-200'}`}
+                >
+                  <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${settings[key] ? 'left-[18px]' : 'left-0.5'}`} />
+                </button>
               </div>
+            ))}
 
-              <button
-                onClick={() =>
-                  toggleSetting('autoTracking')
-                }
-                className={`
-                  relative h-[28px] w-[50px]
-                  sm:h-[30px] sm:w-[54px]
-                  rounded-full transition-all flex-shrink-0
-                  ${
-                    settings.autoTracking
-                      ? 'bg-[#0B3B91]'
-                      : 'bg-[#d9d9d9]'
-                  }
-                `}
-              >
-
-                <div
-                  className={`
-                    absolute top-[3px]
-                    h-[22px] w-[22px]
-                    sm:h-[24px] sm:w-[24px]
-                    rounded-full bg-white
-                    transition-all
-                    ${
-                      settings.autoTracking
-                        ? 'left-[25px] sm:left-[27px]'
-                        : 'left-[3px]'
-                    }
-                  `}
-                />
-
-              </button>
-
-            </div>
-
-            {/* ITEM 2 */}
-            <div className="flex items-start justify-between gap-4 sm:gap-6">
-
-              <div className="flex-1">
-
-                <h2 className="text-[14px] sm:text-[16px] font-medium text-black">
-                  Restrict login to office location
-                </h2>
-
-                <p className="mt-2 text-[11px] sm:text-[12px] leading-[18px] sm:leading-[20px] text-gray-500">
-                  Allow employees to access work
-                  sessions only within the office
-                  location for improved attendance
-                  verification.
-                </p>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  toggleSetting('officeRestriction')
-                }
-                className={`
-                  relative h-[28px] w-[50px]
-                  sm:h-[30px] sm:w-[54px]
-                  rounded-full transition-all flex-shrink-0
-                  ${
-                    settings.officeRestriction
-                      ? 'bg-[#0B3B91]'
-                      : 'bg-[#d9d9d9]'
-                  }
-                `}
-              >
-
-                <div
-                  className={`
-                    absolute top-[3px]
-                    h-[22px] w-[22px]
-                    sm:h-[24px] sm:w-[24px]
-                    rounded-full bg-white
-                    transition-all
-                    ${
-                      settings.officeRestriction
-                        ? 'left-[25px] sm:left-[27px]'
-                        : 'left-[3px]'
-                    }
-                  `}
-                />
-
-              </button>
-
-            </div>
-
-            {/* ITEM 3 */}
-            <div className="flex items-start justify-between gap-4 sm:gap-6">
-
-              <div className="flex-1">
-
-                <h2 className="text-[14px] sm:text-[16px] font-medium text-black">
-                  Set official work hours
-                </h2>
-
-                <p className="mt-2 text-[11px] sm:text-[12px] leading-[18px] sm:leading-[20px] text-gray-500">
-                  Define standard work hours to
-                  monitor work duration and
-                  attendance consistency.
-                </p>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  toggleSetting('workHours')
-                }
-                className={`
-                  relative h-[28px] w-[50px]
-                  sm:h-[30px] sm:w-[54px]
-                  rounded-full transition-all flex-shrink-0
-                  ${
-                    settings.workHours
-                      ? 'bg-[#0B3B91]'
-                      : 'bg-[#d9d9d9]'
-                  }
-                `}
-              >
-
-                <div
-                  className={`
-                    absolute top-[3px]
-                    h-[22px] w-[22px]
-                    sm:h-[24px] sm:w-[24px]
-                    rounded-full bg-white
-                    transition-all
-                    ${
-                      settings.workHours
-                        ? 'left-[25px] sm:left-[27px]'
-                        : 'left-[3px]'
-                    }
-                  `}
-                />
-
-              </button>
-
-            </div>
-
-            {/* ITEM 4 */}
-            <div className="flex items-start justify-between gap-4 sm:gap-6">
-
-              <div className="flex-1">
-
-                <h2 className="text-[14px] sm:text-[16px] font-medium text-black">
-                  Enable late attendance alerts
-                </h2>
-
-                <p className="mt-2 text-[11px] sm:text-[12px] leading-[18px] sm:leading-[20px] text-gray-500">
-                  Receive notifications when employees
-                  resume work later than the approved
-                  work schedule.
-                </p>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  toggleSetting('lateAlerts')
-                }
-                className={`
-                  relative h-[28px] w-[50px]
-                  sm:h-[30px] sm:w-[54px]
-                  rounded-full transition-all flex-shrink-0
-                  ${
-                    settings.lateAlerts
-                      ? 'bg-[#0B3B91]'
-                      : 'bg-[#d9d9d9]'
-                  }
-                `}
-              >
-
-                <div
-                  className={`
-                    absolute top-[3px]
-                    h-[22px] w-[22px]
-                    sm:h-[24px] sm:w-[24px]
-                    rounded-full bg-white
-                    transition-all
-                    ${
-                      settings.lateAlerts
-                        ? 'left-[25px] sm:left-[27px]'
-                        : 'left-[3px]'
-                    }
-                  `}
-                />
-
-              </button>
-
-            </div>
-
-            {/* ITEM 5 */}
-            <div className="flex items-start justify-between gap-4 sm:gap-6">
-
-              <div className="flex-1">
-
-                <h2 className="text-[14px] sm:text-[16px] font-medium text-black">
-                  Enable daily report reminders
-                </h2>
-
-                <p className="mt-2 text-[11px] sm:text-[12px] leading-[18px] sm:leading-[20px] text-gray-500">
-                  Remind employees to submit their
-                  daily work summaries before ending
-                  their work session.
-                </p>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  toggleSetting('dailyReports')
-                }
-                className={`
-                  relative h-[28px] w-[50px]
-                  sm:h-[30px] sm:w-[54px]
-                  rounded-full transition-all flex-shrink-0
-                  ${
-                    settings.dailyReports
-                      ? 'bg-[#0B3B91]'
-                      : 'bg-[#d9d9d9]'
-                  }
-                `}
-              >
-
-                <div
-                  className={`
-                    absolute top-[3px]
-                    h-[22px] w-[22px]
-                    sm:h-[24px] sm:w-[24px]
-                    rounded-full bg-white
-                    transition-all
-                    ${
-                      settings.dailyReports
-                        ? 'left-[25px] sm:left-[27px]'
-                        : 'left-[3px]'
-                    }
-                  `}
-                />
-
-              </button>
-
-            </div>
-
+            <button
+              onClick={handleFinishSetup}
+              className="mt-6 h-9 w-full rounded-md bg-[#0B3B91] text-sm font-medium text-white hover:bg-[#082d70] transition-all"
+            >
+              Finish Setup
+            </button>
           </div>
 
-          {/* ========================================= */}
-          {/* BUTTON */}
-          {/* ========================================= */}
-
-          <button
-            onClick={handleFinishSetup}
-            className="
-              mx-auto mt-12 sm:mt-16 flex
-              h-[44px] sm:h-[46px]
-              w-full max-w-[360px]
-              items-center justify-center
-              rounded-md bg-[#0B3B91]
-              text-[13px]
-              font-medium text-white
-              shadow-md
-              transition hover:bg-[#082d70]
-            "
-          >
-            Finish Setup
-          </button>
-
+          <p className="mt-8 text-center text-[10px] text-gray-400">
+            © 2025 All Rights Reserved Track.
+          </p>
         </div>
-
       </div>
 
-      
-      {/* FOOTER */}
-
-      <div className="pb-5 sm:pb-6 text-center text-[10px] sm:text-[11px] text-gray-400">
-        © 2025 All Rights Reserved Track.
+      {/* RIGHT SIDE */}
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#F9FAFB] lg:flex">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
+        <div className="relative z-10 max-w-md px-10">
+          <p className="text-2xl font-bold leading-snug tracking-tight text-black">
+            Automate your workflow with smart tracking rules.
+          </p>
+          <div className="mt-8 flex items-center gap-3">
+             <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0B3B91]">
+               <Settings2 size={20} />
+             </div>
+             <div>
+               <p className="text-sm font-semibold text-black">System Rules</p>
+               <p className="text-xs text-gray-500">Global workspace policies</p>
+             </div>
+          </div>
+        </div>
       </div>
-
     </div>
   )
 }

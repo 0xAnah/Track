@@ -5,17 +5,21 @@ import {
   Mail,
   Lock,
   Eye,
+  EyeOff,
 } from 'lucide-react'
 import api, { USE_MOCK } from '../../services/api'
 import { BrandLogo } from '../../components/ui/BrandLogo'
 
-const LandingSignup = () => {
+const inputClass =
+  'h-9 w-full rounded-md border border-gray-200 bg-white px-3 text-sm text-black outline-none placeholder:text-gray-400 focus:border-[#0B3B91]'
 
+const LandingSignup = () => {
   const navigate = useNavigate()
 
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -28,7 +32,6 @@ const LandingSignup = () => {
     const firstName = nameParts[0] || 'Admin'
     const lastName = nameParts.slice(1).join(' ') || 'User'
 
-    // Store in sessionStorage to use at the end of onboarding
     const hrSignupData = {
       username: email.split('@')[0],
       email,
@@ -41,8 +44,10 @@ const LandingSignup = () => {
     sessionStorage.setItem('hrSignupData', JSON.stringify(hrSignupData))
 
     if (USE_MOCK) {
-      navigate('/verify-email')
-      setIsLoading(false)
+      setTimeout(() => {
+        navigate('/verify-email')
+        setIsLoading(false)
+      }, 800)
       return
     }
 
@@ -60,360 +65,116 @@ const LandingSignup = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#F5F7FA] p-2 sm:p-4'>
-
-      <div
-        className='
-          min-h-[95vh]
-          bg-white
-          rounded-[30px]
-          overflow-hidden
-          grid grid-cols-1 lg:grid-cols-2
-        '
-      >
-
-        {/* LEFT SIDE */}
-        <div
-          className='
-            px-6 sm:px-10 lg:px-16
-            py-8
-            flex flex-col
-          '
-        >
-
-          {/* TOP */}
-          <div className='flex items-center justify-between mb-10'>
-
-            <BrandLogo />
-
-            {/* SIGN IN */}
-            <div className='flex items-center gap-3'>
-
-              <p className='text-sm text-gray-500 hidden sm:block'>
-                Already have an account?
-              </p>
-
-              <button
-                onClick={() => navigate('/login')}
-                className='
-                  px-4 py-2 rounded-xl
-                  border border-gray-200
-                  text-sm font-medium
-                  hover:bg-gray-50
-                  transition-all
-                '
-              >
-                Sign In
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* CENTER CONTENT */}
-          <div
-            className='
-              flex-1 flex flex-col
-              justify-center
-              max-w-md mx-auto w-full
-            '
+    <div className="flex min-h-screen w-full bg-white">
+      {/* LEFT SIDE - FORM */}
+      <div className="relative flex w-full items-center justify-center px-4 py-8 lg:w-1/2">
+        <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className="h-8 rounded-md border border-gray-200 px-3 text-xs font-medium text-gray-600 hover:bg-gray-50"
           >
+            Sign in
+          </button>
+        </div>
 
-            {/* ICON */}
-            <div className='flex justify-center mb-8'>
+        <div className="w-full max-w-sm">
+          <div className="mb-4 flex justify-center">
+            <BrandLogo />
+          </div>
 
-              <div
-                className='
-                  h-11 w-11 rounded-full
-                  border border-gray-200
-                  flex items-center justify-center
-                '
-              >
-                <User
-                  size={22}
-                  className='text-gray-500'
-                />
-              </div>
+          <h1 className="text-center text-xl font-semibold text-black">Create workspace</h1>
+          <p className="mt-1 text-center text-xs text-gray-500">
+            Set up your workforce management dashboard.
+          </p>
 
-            </div>
+          <form onSubmit={handleSignup} className="mt-6 space-y-3">
+            {error && <p className="text-center text-xs text-red-500">{error}</p>}
 
-            {/* TEXT */}
-            <div className='text-center mb-8'>
-
-              <h1 className='mb-1 text-xl font-semibold'>
-                Create your workspace
-              </h1>
-
-              <p className='text-xs leading-relaxed text-gray-500'>
-                Set up your workforce management dashboard
-                and start tracking employee activity in real time.
-              </p>
-
-            </div>
-
-            {/* GOOGLE BUTTON */}
-            <button
-              className='
-                w-full h-9 rounded-md text-sm
-                border border-gray-200
-                flex items-center justify-center gap-3
-                text-sm font-medium
-                hover:bg-gray-50 transition-all
-              '
-            >
-
-              <img
-                src='https://www.svgrepo.com/show/475656/google-color.svg'
-                alt='google'
-                className='w-5 h-5'
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                className={`${inputClass} pl-9`}
               />
-
-              Sign Up with Google
-
-            </button>
-
-            {/* DIVIDER */}
-            <div className='flex items-center gap-4 my-8'>
-
-              <div className='flex-1 h-px bg-gray-200'></div>
-
-              <span className='text-sm text-gray-400'>
-                Or
-              </span>
-
-              <div className='flex-1 h-px bg-gray-200'></div>
-
             </div>
 
-            {/* FORM */}
-            <form className='space-y-3' onSubmit={handleSignup}>
+            <div className="relative">
+              <Mail className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={`${inputClass} pl-9`}
+              />
+            </div>
 
-              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-              {/* FULL NAME */}
-              <div>
-
-                <label className='mb-1 block text-xs font-medium'>
-                  Full Name
-                </label>
-
-                <div className='relative'>
-
-                  <input
-                    type='text'
-                    placeholder='Toby Wilson'
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    className='
-                      w-full h-9 rounded-md text-sm
-                      border border-gray-200
-                      pl-12 pr-4
-                      outline-none
-                      focus:border-[#0052CC]
-                    '
-                  />
-
-                  <User
-                    size={18}
-                    className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-
-                </div>
-
-              </div>
-
-              {/* EMAIL */}
-              <div>
-
-                <label className='mb-1 block text-xs font-medium'>
-                  Email Address
-                </label>
-
-                <div className='relative'>
-
-                  <input
-                    type='email'
-                    placeholder='hello@track.com'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className='
-                      w-full h-9 rounded-md text-sm
-                      border border-gray-200
-                      pl-12 pr-4
-                      outline-none
-                      focus:border-[#0052CC]
-                    '
-                  />
-
-                  <Mail
-                    size={18}
-                    className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-
-                </div>
-
-              </div>
-
-              {/* PASSWORD */}
-              <div>
-
-                <label className='mb-1 block text-xs font-medium'>
-                  Password
-                </label>
-
-                <div className='relative'>
-
-                  <input
-                    type='password'
-                    placeholder='••••••••••'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className='
-                      w-full h-9 rounded-md text-sm
-                      border border-gray-200
-                      pl-12 pr-12
-                      outline-none
-                      focus:border-[#0052CC]
-                    '
-                  />
-
-                  <Lock
-                    size={18}
-                    className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-
-                  <Eye
-                    size={18}
-                    className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer'
-                  />
-
-                </div>
-
-              </div>
-
-              {/* OPTIONS */}
-              <div className='flex items-center justify-between text-sm'>
-
-                <label className='flex items-center gap-2 text-gray-500'>
-
-                  <input type='checkbox' />
-
-                  Keep me logged in
-
-                </label>
-
-                <button className='text-gray-500 hover:text-[#0052CC]'>
-                  Forgot Password?
-                </button>
-
-              </div>
-
-              {/* BUTTON */}
+            <div className="relative">
+              <Lock className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className={`${inputClass} pl-9 pr-9`}
+              />
               <button
-                type="submit"
-                disabled={isLoading}
-                className={`
-                  w-full h-9 rounded-md text-sm
-                  ${isLoading ? 'bg-blue-400' : 'bg-[#0052CC] hover:bg-blue-700'}
-                  text-white font-semibold
-                  transition-all
-                  shadow-lg shadow-blue-200
-                `}
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
               >
-                {isLoading ? 'Sending Code...' : 'Create Account'}
+                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
-
-            </form>
-
-          </div>
-
-          {/* FOOTER */}
-          <div className='text-center mt-10 text-xs text-gray-400'>
-            © 2025 All Rights Reserved Track.
-          </div>
-
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div
-          className='
-            hidden lg:flex
-            bg-[#F8F9FA]
-            relative
-            items-center justify-center
-            px-20
-          '
-        >
-
-          {/* GRID BACKGROUND */}
-          <div
-            className='
-              absolute inset-0
-              opacity-40
-            '
-            style={{
-              backgroundImage:
-                'linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)',
-              backgroundSize: '50px 50px',
-            }}
-          />
-
-          {/* CONTENT */}
-          <div className='relative z-10 max-w-xl'>
-
-            <h2 className='text-4xl leading-relaxed font-medium mb-10'>
-              The Workforce Management tool has revolutionized our operations.
-              Its efficient, user-friendly, and helps us track our staffs
-              activities in real time.
-            </h2>
-
-            {/* USER */}
-            <div className='flex items-center justify-between'>
-
-              <div className='flex items-center gap-4'>
-
-                <img
-                  src='https://randomuser.me/api/portraits/women/44.jpg'
-                  alt='user'
-                  className='w-14 h-14 rounded-full object-cover'
-                />
-
-                <div>
-
-                  <h4 className='font-semibold text-lg'>
-                    Amina Yusuf
-                  </h4>
-
-                  <p className='text-sm text-gray-500'>
-                    HR Manager, Global Solutions
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* SLIDER */}
-              <div className='flex items-center gap-2'>
-
-                <div className='w-10 h-1 rounded-full bg-[#0052CC]'></div>
-
-                <div className='w-2 h-2 rounded-full bg-gray-300'></div>
-
-                <div className='w-2 h-2 rounded-full bg-gray-300'></div>
-
-              </div>
-
             </div>
 
-          </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="h-9 w-full rounded-md bg-[#0B3B91] text-sm font-medium text-white hover:bg-[#082d70] disabled:opacity-50"
+            >
+              {isLoading ? 'Creating account…' : 'Create Account'}
+            </button>
+          </form>
 
+          <p className="mt-8 text-center text-[10px] text-gray-400">
+            © 2025 All Rights Reserved Track.
+          </p>
         </div>
-
       </div>
 
+      {/* RIGHT SIDE - QUOTE */}
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#F9FAFB] lg:flex">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
+        <div className="relative z-10 max-w-md px-10">
+          <p className="text-2xl font-bold leading-snug tracking-tight text-black">
+            The Workforce Management tool has revolutionized our operations.
+          </p>
+          <div className="mt-6 flex items-center gap-3">
+            <img
+              src="https://randomuser.me/api/portraits/women/44.jpg"
+              alt=""
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <div>
+              <p className="text-sm font-semibold text-black">Amina Yusuf</p>
+              <p className="text-xs text-gray-500">HR Manager, Global Solutions</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Building2 } from 'lucide-react'
 import api from '../../services/api'
 import { useAuth } from '../../context/AuthContext'
+import { BrandLogo } from '../../components/ui/BrandLogo'
+
+const inputClass =
+  'h-9 w-full rounded-md border border-gray-200 bg-white px-3 text-sm text-black outline-none placeholder:text-gray-400 focus:border-[#0B3B91]'
 
 const WorkspaceSetup = () => {
   const navigate = useNavigate()
@@ -53,15 +57,10 @@ const WorkspaceSetup = () => {
 
       const response = await api.post('/auth/signup/hr/', payload)
 
-      // Store auth tokens
       localStorage.setItem('access_token', response.data.access)
       localStorage.setItem('refresh_token', response.data.refresh)
       setUser(response.data.user)
-
-      // Store workspace config for later (optional)
       localStorage.setItem('workspaceData', JSON.stringify(formData))
-
-      // Clear temp session
       sessionStorage.removeItem('hrSignupData')
 
       navigate('/workforce-import')
@@ -74,250 +73,138 @@ const WorkspaceSetup = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] font-sans">
-
-      {/* TOP AREA */}
-      <div className="px-5 pt-5 sm:px-8 lg:px-16 lg:pt-8">
-
-        {/* HEADER */}
-        <div className="flex items-center justify-between">
-
-          {/* LOGO */}
-          <div className="h-7 w-7 rounded-sm bg-[#0B3B91]" />
-
-          {/* SIGN IN */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <p className="hidden text-[13px] text-gray-500 sm:block">
-              Already have an account?
-            </p>
-
-            <button
-              className="
-                rounded-md border border-gray-200
-                bg-white px-3 py-1.5
-                text-[11px] text-gray-500
-                shadow-sm transition
-                hover:bg-gray-50
-              "
-            >
-              Sign In
-            </button>
-          </div>
+    <div className="flex min-h-screen w-full bg-white">
+      {/* LEFT SIDE */}
+      <div className="relative flex w-full items-center justify-center px-4 py-8 lg:w-1/2">
+        {/* PROGRESS BAR */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+           <div className="h-full bg-[#0B3B91] transition-all duration-500" style={{ width: '25%' }} />
         </div>
 
-        {/* BACK + STEP */}
-        <div className="mt-8 flex items-center justify-between">
-
+        <div className="absolute left-4 top-6 sm:left-6">
           <button
             onClick={() => navigate(-1)}
-            className="
-              flex items-center gap-2
-              text-[13px] text-gray-500
-              transition hover:text-black
-            "
+            className="flex items-center gap-2 text-xs text-gray-500 hover:text-black"
           >
-            <ArrowLeft size={15} />
-            Go Back
+            <ArrowLeft size={14} />
+            Back
           </button>
-
-          <p className="text-[13px] text-gray-500">
-            Step 1 / 4
-          </p>
         </div>
 
-        {/* PROGRESS BAR */}
-        <div className="mt-4 h-[4px] w-full overflow-hidden rounded-full bg-[#ececec]">
-          <div className="h-full w-1/4 rounded-full bg-[#0B3B91]" />
-        </div>
-      </div>
+        <div className="w-full max-w-sm">
+          <div className="mb-4 flex justify-center">
+            <BrandLogo />
+          </div>
 
-      {/* CONTENT */}
-      <div className="flex justify-center px-5 py-12 sm:px-8 lg:py-16">
-
-        <div className="w-full max-w-[420px]">
-
-          {/* TITLE */}
           <div className="text-center">
-
-            <h1
-              className="
-                text-[28px] font-semibold
-                tracking-[-0.5px]
-                text-black
-                sm:text-[34px]
-              "
-            >
-              Let’s Set Up Your Workspace
-            </h1>
-
-            <p
-              className="
-                mx-auto mt-3 max-w-[320px]
-                text-[14px]
-                leading-[24px]
-                text-gray-500
-              "
-            >
-              Tell us about your organization to personalize
-              your dashboard experience.
+            <h1 className="text-xl font-semibold text-black">Workspace setup</h1>
+            <p className="mt-1 text-xs text-gray-500">
+              Tell us about your organization. (Step 1/4)
             </p>
           </div>
 
-          {/* FORM */}
-          <div className="mt-12 space-y-5">
+          <div className="mt-6 space-y-3">
+            {error && <p className="text-center text-xs text-red-500">{error}</p>}
 
-            {/* ORGANIZATION */}
             <div>
-              <label className="mb-2 block text-[14px] font-medium text-black">
-                Organization Name
-              </label>
-
+              <label className="mb-1 block text-[11px] font-medium text-gray-700">Organization Name</label>
               <input
                 type="text"
                 name="organizationName"
                 value={formData.organizationName}
                 onChange={handleChange}
-                placeholder="Toby Refineries"
-                className="
-                  h-[46px] w-full rounded-md
-                  border border-gray-200
-                  bg-white px-4
-                  text-[13px]
-                  outline-none transition
-                  placeholder:text-gray-400
-                  focus:border-[#0B3B91]
-                "
+                placeholder="e.g. Toby Refineries"
+                className={inputClass}
               />
             </div>
 
-            {/* INDUSTRY */}
             <div>
-              <label className="mb-2 block text-[14px] font-medium text-black">
-                Industry
-              </label>
-
+              <label className="mb-1 block text-[11px] font-medium text-gray-700">Industry</label>
               <input
                 type="text"
                 name="industry"
                 value={formData.industry}
                 onChange={handleChange}
-                placeholder="Oil & Gas"
-                className="
-                  h-[46px] w-full rounded-md
-                  border border-gray-200
-                  bg-white px-4
-                  text-[13px]
-                  outline-none transition
-                  placeholder:text-gray-400
-                  focus:border-[#0B3B91]
-                "
+                placeholder="e.g. Oil & Gas"
+                className={inputClass}
               />
             </div>
 
-            {/* EMPLOYEES */}
-            <div>
-              <label className="mb-2 block text-[14px] font-medium text-black">
-                Number of Employees
-              </label>
-
-              <input
-                type="number"
-                name="employees"
-                value={formData.employees}
-                onChange={handleChange}
-                placeholder="23"
-                className="
-                  h-[46px] w-full rounded-md
-                  border border-gray-200
-                  bg-white px-4
-                  text-[13px]
-                  outline-none transition
-                  placeholder:text-gray-400
-                  focus:border-[#0B3B91]
-                "
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-[11px] font-medium text-gray-700">Employees</label>
+                <input
+                  type="number"
+                  name="employees"
+                  value={formData.employees}
+                  onChange={handleChange}
+                  placeholder="23"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-medium text-gray-700">Work Hours</label>
+                <input
+                  type="text"
+                  name="workHours"
+                  value={formData.workHours}
+                  onChange={handleChange}
+                  placeholder="08:00 - 17:00"
+                  className={inputClass}
+                />
+              </div>
             </div>
 
-            {/* ADDRESS */}
             <div>
-              <label className="mb-2 block text-[14px] font-medium text-black">
-                Office Address
-              </label>
-
+              <label className="mb-1 block text-[11px] font-medium text-gray-700">Office Address</label>
               <input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                placeholder="12, Market Road, Yaba Lagos"
-                className="
-                  h-[46px] w-full rounded-md
-                  border border-gray-200
-                  bg-white px-4
-                  text-[13px]
-                  outline-none transition
-                  placeholder:text-gray-400
-                  focus:border-[#0B3B91]
-                "
+                placeholder="12, Market Road, Yaba"
+                className={inputClass}
               />
             </div>
 
-            {/* WORK HOURS */}
-            <div>
-              <label className="mb-2 block text-[14px] font-medium text-black">
-                Official Work Hours
-              </label>
-
-              <input
-                type="text"
-                name="workHours"
-                value={formData.workHours}
-                onChange={handleChange}
-                placeholder="08:00 am to 5:00 pm"
-                className="
-                  h-[46px] w-full rounded-md
-                  border border-gray-200
-                  bg-white px-4
-                  text-[13px]
-                  outline-none transition
-                  placeholder:text-gray-400
-                  focus:border-[#0B3B91]
-                "
-              />
-            </div>
-
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-            {/* BUTTON */}
             <button
               onClick={handleContinue}
               disabled={isLoading}
-              className="
-                mt-2 h-[48px] w-full
-                rounded-md
-                bg-[#0B3B91]
-                text-[14px]
-                font-medium
-                text-white
-                shadow-md
-                transition hover:bg-[#082d70]
-                disabled:opacity-50
-              "
+              className="h-9 w-full rounded-md bg-[#0B3B91] text-sm font-medium text-white hover:bg-[#082d70] disabled:opacity-50"
             >
-              {isLoading ? 'Creating Workspace...' : 'Continue'}
+              {isLoading ? 'Setting up...' : 'Continue'}
             </button>
           </div>
+
+          <p className="mt-8 text-center text-[10px] text-gray-400">
+            © 2025 All Rights Reserved Track.
+          </p>
         </div>
       </div>
 
-      {/* FOOTER */}
-      <div
-        className="
-          pb-6 text-center
-          text-[11px] text-gray-400
-        "
-      >
-        © 2025 All Rights Reserved Track.
+      {/* RIGHT SIDE */}
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#F9FAFB] lg:flex">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
+        <div className="relative z-10 max-w-md px-10">
+          <p className="text-2xl font-bold leading-snug tracking-tight text-black">
+            Personalize your workforce management experience.
+          </p>
+          <div className="mt-6 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0B3B91]">
+              <Building2 size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-black">Company Profile</p>
+              <p className="text-xs text-gray-500">Configure your organization details</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

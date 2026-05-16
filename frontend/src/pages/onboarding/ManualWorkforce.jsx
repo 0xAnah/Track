@@ -1,67 +1,39 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, Plus, X, Users } from 'lucide-react'
 import api from '../../services/api'
+import { BrandLogo } from '../../components/ui/BrandLogo'
+
+const inputClass =
+  'h-8 w-full rounded-md border border-gray-200 bg-white px-2.5 text-xs text-black outline-none placeholder:text-gray-400 focus:border-[#0B3B91]'
 
 const ManualWorkforce = () => {
-
   const navigate = useNavigate()
-
   const [employees, setEmployees] = useState([
-    {
-      fullName: '',
-      email: '',
-      staffId: '',
-      department: '',
-      role: '',
-      phone: '',
-    },
+    { fullName: '', email: '', staffId: '', department: '' },
   ])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  /* ========================================= */
-  /* HANDLE INPUT CHANGE */
-  /* ========================================= */
-
   const handleChange = (index, field, value) => {
-
     const updatedEmployees = [...employees]
-
     updatedEmployees[index][field] = value
-
     setEmployees(updatedEmployees)
   }
 
-  /* ========================================= */
-  /* ADD EMPLOYEE */
-  /* ========================================= */
-
   const handleAddEmployee = () => {
-
-    setEmployees([
-      ...employees,
-      {
-        fullName: '',
-        email: '',
-        staffId: '',
-        department: '',
-        role: '',
-        phone: '',
-      },
-    ])
+    setEmployees([...employees, { fullName: '', email: '', staffId: '', department: '' }])
   }
 
-  /* ========================================= */
-  /* CONTINUE */
-  /* ========================================= */
+  const handleRemoveEmployee = (index) => {
+    if (employees.length === 1) return
+    setEmployees(employees.filter((_, i) => i !== index))
+  }
 
   const handleContinue = async () => {
     setError('')
     setIsLoading(true)
-
     try {
-      // Map frontend state to backend expected format
       const formattedWorkers = employees.map(emp => {
         const nameParts = emp.fullName.trim().split(' ')
         return {
@@ -73,466 +45,164 @@ const ManualWorkforce = () => {
         }
       })
 
-      // Remove empty entries (where email is blank)
       const validWorkers = formattedWorkers.filter(w => w.email)
-
       if (validWorkers.length === 0) {
-        setError('Please enter at least one valid employee with an email address.')
+        setError('Please enter at least one valid email.')
         setIsLoading(false)
         return
       }
 
       await api.post('/users/workers/invite-bulk/', { workers: validWorkers })
-      
-      // Success, move to the next screen
       navigate('/tracking-configuration')
     } catch (err) {
-      console.error(err)
-      setError(err.response?.data?.detail || 'Failed to send invites. Please check your data.')
+      setError(err.response?.data?.detail || 'Failed to send invites.')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-
-    <div className='min-h-screen bg-[#f8f8f8] font-sans'>
-
-      {/* ========================================= */}
-      {/* HEADER */}
-      {/* ========================================= */}
-
-      <div className='px-5 pt-5 sm:px-8 lg:px-16 lg:pt-6'>
-
-        {/* TOP BAR */}
-        <div className='flex items-center justify-between'>
-
-          {/* LOGO */}
-          <div className='h-7 w-7 rounded-sm bg-[#0B3B91]' />
-
-          {/* SIGN IN */}
-          <div className='flex items-center gap-3'>
-
-            <p className='hidden text-[13px] text-gray-500 sm:block'>
-              Already have an account?
-            </p>
-
-            <button
-              className='
-                rounded-[4px]
-                border border-gray-200
-                bg-white
-                px-3 py-1
-                text-[11px]
-                text-gray-500
-              '
-            >
-              Sign In
-            </button>
-
-          </div>
-
+    <div className="flex min-h-screen w-full bg-white">
+      {/* LEFT SIDE */}
+      <div className="relative flex w-full items-center justify-center px-4 py-8 lg:w-1/2">
+        {/* PROGRESS BAR */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+           <div className="h-full bg-[#0B3B91] transition-all duration-500" style={{ width: '50%' }} />
         </div>
 
-        {/* BACK + STEP */}
-        <div className='mt-10 flex items-center justify-between'>
-
-          {/* BACK */}
+        <div className="absolute left-4 top-6 sm:left-6">
           <button
             onClick={() => navigate(-1)}
-            className='
-              flex items-center gap-2
-              text-[13px] text-gray-500
-            '
+            className="flex items-center gap-2 text-xs text-gray-500 hover:text-black"
           >
-            <ArrowLeft size={15} />
-            Go Back
+            <ArrowLeft size={14} />
+            Back
           </button>
-
-          {/* STEP */}
-          <p className='text-[13px] text-gray-500'>
-            Step 2 / 4
-          </p>
-
         </div>
 
-        {/* PROGRESS BAR */}
-        <div
-          className='
-            mt-4 h-[4px]
-            w-full overflow-hidden
-            rounded-full bg-[#ececec]
-          '
-        >
+        <div className="w-full max-w-lg">
+          <div className="mb-4 flex justify-center">
+            <BrandLogo />
+          </div>
 
-          <div
-            className='
-              h-full w-2/4
-              rounded-full bg-[#0B3B91]
-            '
-          />
-
-        </div>
-
-      </div>
-
-      {/* ========================================= */}
-      {/* MAIN CONTENT */}
-      {/* ========================================= */}
-
-      <div className='flex justify-center px-5 py-12'>
-
-        <div className='w-full max-w-[420px]'>
-
-          {/* TITLE */}
-          <div className='text-center'>
-
-            <h1
-              className='
-                text-[22px]
-                font-semibold
-                text-black
-              '
-            >
-              Import Your Workforce
-            </h1>
-
-            <p
-              className='
-                mx-auto mt-2
-                max-w-[290px]
-                text-[14px]
-                leading-[22px]
-                text-gray-500
-              '
-            >
-              Add employees individually or upload
-              your staff list in bulk.
+          <div className="text-center">
+            <h1 className="text-xl font-semibold text-black">Add workforce manually</h1>
+            <p className="mt-1 text-xs text-gray-500">
+              Add employees individually. (Step 2/4)
             </p>
-
           </div>
 
-          {/* ========================================= */}
-          {/* EMPLOYEE FORMS */}
-          {/* ========================================= */}
+          <div className="mt-8">
+            <div className="flex items-center justify-center gap-6 mb-8">
+               <button 
+                 onClick={() => navigate('/workforce-import')}
+                 className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity"
+               >
+                 <div className="h-2 w-2 rounded-full bg-gray-300" />
+                 <span className="text-xs font-medium text-gray-500">CSV Upload</span>
+               </button>
+               <div className="flex items-center gap-2">
+                 <div className="h-2 w-2 rounded-full bg-[#0B3B91]" />
+                 <span className="text-xs font-medium text-black">Manual Entry</span>
+               </div>
+            </div>
 
-          <div className='mt-12 space-y-10'>
-
-            {employees.map((employee, index) => (
-
-              <div
-                key={index}
-                className='space-y-5'
-              >
-
-                {/* FULL NAME */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Full Name
-                  </label>
-
-                  <input
-                    type='text'
-                    value={employee.fullName}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'fullName',
-                        e.target.value
-                      )
-                    }
-                    placeholder='Toby Wilson'
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
-                {/* EMAIL ADDRESS */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Email Address
-                  </label>
-
-                  <input
-                    type='email'
-                    value={employee.email}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'email',
-                        e.target.value
-                      )
-                    }
-                    placeholder='toby@track.com'
-                    required
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
-                {/* STAFF ID */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Staff ID
-                  </label>
-
-                  <input
-                    type='text'
-                    value={employee.staffId}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'staffId',
-                        e.target.value
-                      )
-                    }
-                    placeholder='2340981'
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
-                {/* DEPARTMENT */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Department
-                  </label>
-
-                  <input
-                    type='text'
-                    value={employee.department}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'department',
-                        e.target.value
-                      )
-                    }
-                    placeholder='Content'
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
-                {/* ROLE */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Role
-                  </label>
-
-                  <input
-                    type='text'
-                    value={employee.role}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'role',
-                        e.target.value
-                      )
-                    }
-                    placeholder='Social Media Strategist'
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
-                {/* PHONE */}
-                <div>
-
-                  <label
-                    className='
-                      mb-2 block
-                      text-[14px]
-                      font-medium
-                      text-black
-                    '
-                  >
-                    Phone Number
-                  </label>
-
-                  <input
-                    type='text'
-                    value={employee.phone}
-                    onChange={(e) =>
-                      handleChange(
-                        index,
-                        'phone',
-                        e.target.value
-                      )
-                    }
-                    placeholder='09138070568'
-                    className='
-                      h-[42px] w-full
-                      rounded-[4px]
-                      border border-gray-200
-                      bg-white px-4
-                      text-[13px]
-                      outline-none
-                      placeholder:text-gray-400
-                      focus:border-[#0B3B91]
-                    '
-                  />
-
-                </div>
-
+            <div className="max-h-[40vh] overflow-y-auto pr-1 custom-scrollbar">
+              <div className="space-y-4">
+                {employees.map((emp, index) => (
+                  <div key={index} className="relative rounded-lg border border-gray-100 bg-gray-50/30 p-3">
+                    {employees.length > 1 && (
+                      <button 
+                        onClick={() => handleRemoveEmployee(index)}
+                        className="absolute -right-2 -top-2 h-5 w-5 rounded-full bg-white border border-gray-200 text-gray-400 hover:text-red-500 flex items-center justify-center shadow-sm"
+                      >
+                        <X size={12} />
+                      </button>
+                    )}
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Full Name"
+                        value={emp.fullName}
+                        onChange={(e) => handleChange(index, 'fullName', e.target.value)}
+                        className={inputClass}
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email Address"
+                        value={emp.email}
+                        onChange={(e) => handleChange(index, 'email', e.target.value)}
+                        className={inputClass}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Staff ID"
+                        value={emp.staffId}
+                        onChange={(e) => handleChange(index, 'staffId', e.target.value)}
+                        className={inputClass}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Department"
+                        value={emp.department}
+                        onChange={(e) => handleChange(index, 'department', e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-
-            ))}
-
-          </div>
-
-          {/* ========================================= */}
-          {/* ADD BUTTON */}
-          {/* ========================================= */}
-
-          <div className='mt-7 flex justify-center'>
+            </div>
 
             <button
               onClick={handleAddEmployee}
-              className='
-                flex h-8 w-8
-                items-center justify-center
-                rounded-[4px]
-                border border-gray-200
-                bg-white text-gray-300
-                transition
-                hover:border-[#0B3B91]
-                hover:text-[#0B3B91]
-              '
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-gray-300 py-2 text-xs font-medium text-gray-500 hover:border-[#0B3B91] hover:text-[#0B3B91] transition-all"
             >
-              <Plus size={16} />
+              <Plus size={14} />
+              Add another employee
             </button>
 
+            {error && <p className="mt-4 text-center text-xs text-red-500">{error}</p>}
+
+            <button
+              onClick={handleContinue}
+              disabled={isLoading}
+              className="mt-8 h-9 w-full rounded-md bg-[#0B3B91] text-sm font-medium text-white hover:bg-[#082d70] disabled:opacity-50"
+            >
+              {isLoading ? 'Sending invites...' : 'Continue'}
+            </button>
           </div>
 
-          {/* ========================================= */}
-          {/* CONTINUE BUTTON */}
-          {/* ========================================= */}
-
-          {error && <p className="text-red-500 text-sm text-center mt-4">{error}</p>}
-
-          <button
-            onClick={handleContinue}
-            disabled={isLoading}
-            className='
-              mx-auto mt-10 flex
-              h-[44px] w-full
-              items-center justify-center
-              rounded-[4px]
-              bg-[#0B3B91]
-              text-[13px]
-              font-medium text-white
-              shadow-md
-              transition hover:bg-[#082d70]
-              disabled:opacity-50
-            '
-          >
-            {isLoading ? 'Sending Invites...' : 'Continue'}
-          </button>
-
+          <p className="mt-8 text-center text-[10px] text-gray-400">
+            © 2025 All Rights Reserved Track.
+          </p>
         </div>
-
       </div>
 
-      {/* ========================================= */}
-      {/* FOOTER */}
-      {/* ========================================= */}
-
-      <div
-        className='
-          pb-6 text-center
-          text-[11px]
-          text-gray-400
-        '
-      >
-        © 2025 All Rights Reserved Track.
+      {/* RIGHT SIDE */}
+      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden bg-[#F9FAFB] lg:flex">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+          }}
+        />
+        <div className="relative z-10 max-w-md px-10">
+          <p className="text-2xl font-bold leading-snug tracking-tight text-black">
+            Build your workforce manually or in groups.
+          </p>
+          <div className="mt-8 flex items-center gap-3">
+             <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0B3B91]">
+               <Users size={20} />
+             </div>
+             <div>
+               <p className="text-sm font-semibold text-black">Team Management</p>
+               <p className="text-xs text-gray-500">Scale your workspace organically</p>
+             </div>
+          </div>
+        </div>
       </div>
-
     </div>
   )
 }
